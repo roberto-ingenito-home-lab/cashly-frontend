@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Filtra Transazioni</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="filter-form">
+    <div class="field">
+      <label for="filter-type">Tipo</label>
+      <select id="filter-type" formControlName="type">
+        <option [ngValue]="null">Tutti</option>
+        <option [ngValue]="TransactionType.Income">Entrate</option>
+        <option [ngValue]="TransactionType.Expense">Uscite</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="filter-category">Categoria</label>
+      <select id="filter-category" formControlName="categoryId">
+        <option [ngValue]="null">Tutte</option>
+        @for (cat of categoriesStore.state(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        }
+      </select>
+    </div>
+
+    <app-input label="Data da" type="date" formControlName="dateFrom" />
+
+    <app-input label="Data a" type="date" formControlName="dateTo" />
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="outlined" (clicked)="reset()">Reimposta</app-button>
+  <div class="primary-actions">
+    <app-button variant="secondary" (clicked)="cancel()">Annulla</app-button>
+    <app-button variant="primary" (clicked)="apply()">Applica</app-button>
+  </div>
+</mat-dialog-actions>

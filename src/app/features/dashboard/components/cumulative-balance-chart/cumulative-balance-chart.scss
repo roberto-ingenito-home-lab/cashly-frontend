@@ -1,0 +1,33 @@
+@use 'variables' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  min-width: 0;
+}
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  gap: $space-2;
+
+  .summary-label {
+    font-size: $font-size-sm;
+    color: $default-500;
+  }
+
+  .summary-value {
+    font-size: $font-size-xl;
+    font-weight: 700;
+    color: $success-600;
+
+    &.negative {
+      color: $danger-600;
+    }
+  }
+}
+
+.chart-wrapper {
+  width: 100%;
+}

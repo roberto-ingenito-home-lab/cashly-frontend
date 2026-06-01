@@ -1,0 +1,61 @@
+<div class="body">
+  <header>
+    <h1>Crea il tuo account</h1>
+    <p>Inserisci i tuoi dati per registrarti</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-input
+      label="Email"
+      type="email"
+      placeholder="mario@gmail.com"
+      autocomplete="email"
+      formControlName="email"
+      [hasError]="form.controls.email.touched && form.controls.email.invalid"
+    >
+      @if (form.controls.email.touched && form.controls.email.errors) {
+        @if (form.controls.email.errors['required']) {
+          L'email è obbligatoria
+        } @else if (form.controls.email.errors['email']) {
+          Inserisci un'email valida
+        }
+      }
+    </app-input>
+
+    <app-input
+      label="Password"
+      type="password"
+      placeholder="••••••"
+      autocomplete="new-password"
+      formControlName="password"
+      [hasError]="form.controls.password.touched && form.controls.password.invalid"
+    >
+      @if (form.controls.password.touched && form.controls.password.errors) {
+        @if (form.controls.password.errors['required']) {
+          La password è obbligatoria
+        }
+      }
+    </app-input>
+
+    <app-input
+      label="Conferma Password"
+      type="password"
+      placeholder="••••••"
+      autocomplete="new-password"
+      formControlName="confirmPassword"
+      [hasError]="form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid"
+    >
+      @if (form.controls.confirmPassword.touched && form.controls.confirmPassword.errors) {
+        @if (form.controls.confirmPassword.errors['passwordMismatch']) {
+          La password non coincidono
+        }
+      }
+    </app-input>
+
+    <app-button type="submit" variant="primary">Registrati</app-button>
+  </form>
+
+  <footer>
+    <p>Hai già un account? <a routerLink="/login">Accedi</a></p>
+  </footer>
+</div>

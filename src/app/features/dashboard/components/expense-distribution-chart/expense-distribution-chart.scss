@@ -1,0 +1,145 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.donut-and-legend {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  align-items: center;
+
+  @include breakpoint('sm') {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.donut {
+  position: relative;
+  flex-shrink: 0;
+  width: 16rem;
+  max-width: 70vw;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+
+  .donut-label {
+    font-size: $font-size-xs;
+    font-weight: 500;
+    color: $default-500;
+    margin-bottom: $space-1;
+  }
+
+  .donut-value {
+    font-size: $font-size-lg;
+    font-weight: 700;
+    color: $foreground;
+  }
+}
+
+:host ::ng-deep .apexcharts-pie [rel] {
+  transition: opacity 250ms ease;
+}
+
+:host[data-selected-rel] ::ng-deep .apexcharts-pie [rel] {
+  opacity: 0.2;
+}
+
+:host[data-selected-rel='1'] ::ng-deep .apexcharts-pie [rel='1'],
+:host[data-selected-rel='2'] ::ng-deep .apexcharts-pie [rel='2'],
+:host[data-selected-rel='3'] ::ng-deep .apexcharts-pie [rel='3'],
+:host[data-selected-rel='4'] ::ng-deep .apexcharts-pie [rel='4'],
+:host[data-selected-rel='5'] ::ng-deep .apexcharts-pie [rel='5'],
+:host[data-selected-rel='6'] ::ng-deep .apexcharts-pie [rel='6'],
+:host[data-selected-rel='7'] ::ng-deep .apexcharts-pie [rel='7'] {
+  opacity: 1;
+}
+
+.legend {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .legend-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: $space-2;
+
+    width: 100%;
+    padding: $space-2 $space-3;
+
+    border: 0;
+    border-radius: $radius-sm;
+    background: color-mix(in srgb, $content2, transparent 40%);
+    color: inherit;
+
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background: color-mix(in srgb, $content2, transparent 20%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $focus;
+      outline-offset: 2px;
+    }
+
+    &.is-selected {
+      background: $content2;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .label {
+      font-size: $font-size-sm;
+      font-weight: 500;
+    }
+
+    .pct {
+      font-size: $font-size-xs;
+      color: $default-500;
+      min-width: 3rem;
+      text-align: right;
+    }
+  }
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 12rem;
+  color: $default-500;
+  font-size: $font-size-sm;
+}

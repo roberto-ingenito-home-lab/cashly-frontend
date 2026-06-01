@@ -1,0 +1,63 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}
+
+header {
+  display: flex;
+  gap: $space-4;
+
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+
+  @include breakpoint('sm') {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  .actions {
+    display: flex;
+    width: 100%;
+    gap: $space-2;
+
+    @include breakpoint('sm') {
+      width: auto;
+    }
+
+    & > * {
+      flex: 1;
+    }
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.category-list {
+  display: grid;
+  gap: $space-4;
+
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  @include breakpoint('md') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @include breakpoint('lg') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

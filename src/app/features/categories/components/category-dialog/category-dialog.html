@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>{{ isEdit() ? 'Modifica categoria' : 'Nuova categoria' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="category-form" (ngSubmit)="submit()">
+    <app-input
+      label="Nome"
+      placeholder="Es. Spesa"
+      formControlName="categoryName"
+      [hasError]="form.controls.categoryName.touched && form.controls.categoryName.invalid"
+    >
+      @if (form.controls.categoryName.touched && form.controls.categoryName.invalid) {
+        Inserisci un nome valido.
+      }
+    </app-input>
+
+    <div class="field">
+      <label>Icona</label>
+      <div class="icon-grid" role="radiogroup" aria-label="Seleziona un'icona">
+        @for (icon of iconOptions; track icon) {
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="selectedIcon() === icon"
+            [attr.aria-label]="icon"
+            [class.active]="selectedIcon() === icon"
+            class="icon-option"
+            [style.color]="selectedIcon() === icon ? selectedColor() : null"
+            [style.border-color]="selectedIcon() === icon ? selectedColor() : null"
+            (click)="selectIcon(icon)"
+          >
+            <app-icon [weight]="600">{{ icon }}</app-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Colore</label>
+      <div class="color-row">
+        <div class="color-grid" role="radiogroup" aria-label="Seleziona un colore">
+          @for (color of colorOptions; track color) {
+            <button
+              type="button"
+              role="radio"
+              [attr.aria-checked]="selectedColor() === color"
+              [attr.aria-label]="color"
+              [class.active]="selectedColor() === color"
+              class="color-option"
+              [style.background-color]="color"
+              (click)="selectColor(color)"
+            ></button>
+          }
+        </div>
+        <label class="color-picker" [style.background-color]="selectedColor()">
+          <app-icon [size]="18" [weight]="600">colorize</app-icon>
+          <input
+            type="color"
+            [value]="selectedColor()"
+            (input)="onColorPickerChange($event)"
+            aria-label="Scegli un colore personalizzato"
+          />
+        </label>
+      </div>
+    </div>
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ isEdit() ? 'Salva' : 'Crea' }}
+  </app-button>
+</mat-dialog-actions>

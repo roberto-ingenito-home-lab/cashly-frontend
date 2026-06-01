@@ -1,0 +1,15 @@
+<button
+  [type]="type()"
+  [disabled]="disabled()"
+  [class]="'btn btn--' + variant() + (iconOnly() ? ' btn--icon' : '')"
+  [style.padding]="iconOnly() ? '0' : padding()"
+  [style.width.px]="iconOnly() ? size() : null"
+  [style.height.px]="iconOnly() ? size() : null"
+  [style.border-radius.px]="iconOnly() ? size() / 4 : null"
+  (click)="clicked.emit()"
+>
+  @if (icon(); as iconName) {
+    <app-icon [size]="iconSize()">{{ iconName }}</app-icon>
+  }
+  <ng-content />
+</button>

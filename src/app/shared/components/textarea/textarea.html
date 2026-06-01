@@ -1,0 +1,19 @@
+<div class="input-group">
+  @if (label()) {
+    <label [for]="inputId">{{ label() }}</label>
+  }
+  <textarea
+    [id]="inputId"
+    [placeholder]="placeholder()"
+    [rows]="rows()"
+    [value]="value()"
+    [disabled]="isDisabled()"
+    [attr.aria-invalid]="hasError() ? 'true' : null"
+    [attr.aria-describedby]="hasError() ? errorId : null"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
+  ></textarea>
+  <div [id]="errorId" class="input-error" role="alert" aria-live="polite">
+    <ng-content />
+  </div>
+</div>

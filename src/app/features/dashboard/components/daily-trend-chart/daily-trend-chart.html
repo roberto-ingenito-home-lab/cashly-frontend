@@ -1,0 +1,37 @@
+<div class="summary">
+  <div class="summary-item">
+    <span class="summary-label">Uscite totali</span>
+    <span class="summary-value">{{ formatCurrency(summary().total) }}</span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">Media giornaliera</span>
+    <span class="summary-value">{{ formatCurrency(summary().avg) }}</span>
+  </div>
+  <div class="legend">
+    <span class="legend-item">
+      <span class="legend-swatch legend-swatch--bar"></span>
+      <span>Uscite</span>
+    </span>
+    <span class="legend-item">
+      <span class="legend-swatch legend-swatch--line"></span>
+      <span>Media mobile 7gg</span>
+    </span>
+  </div>
+</div>
+
+<div class="chart-wrapper">
+  <apx-chart
+    [chart]="chart()"
+    [series]="series()"
+    [colors]="chartColors()"
+    [stroke]="stroke()"
+    [plotOptions]="plotOptions"
+    [dataLabels]="dataLabels"
+    [markers]="markers()"
+    [legend]="legend"
+    [xaxis]="xaxis()"
+    [yaxis]="yaxis()"
+    [grid]="grid()"
+    [tooltip]="tooltip()"
+  />
+</div>

@@ -1,0 +1,51 @@
+<div class="summary">
+  <div class="summary-item">
+    <span class="summary-label">Entrate</span>
+    <span class="summary-value summary-value--income">
+      {{ formatCurrency(summary().totalIncome) }}
+    </span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">Uscite</span>
+    <span class="summary-value summary-value--expense">
+      {{ formatCurrency(summary().totalExpense) }}
+    </span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">Bilancio</span>
+    <span
+      class="summary-value"
+      [class.summary-value--income]="summary().balance >= 0"
+      [class.summary-value--expense]="summary().balance < 0"
+    >
+      {{ formatCurrency(summary().balance) }}
+    </span>
+  </div>
+</div>
+
+<div class="chart-wrapper">
+  <apx-chart
+    [chart]="chart()"
+    [series]="series()"
+    [colors]="chartColors()"
+    [plotOptions]="plotOptions"
+    [stroke]="stroke"
+    [dataLabels]="dataLabels"
+    [legend]="legend"
+    [xaxis]="xaxis()"
+    [yaxis]="yaxis()"
+    [grid]="grid()"
+    [tooltip]="tooltip()"
+  />
+</div>
+
+<div class="legend">
+  <span class="legend-item">
+    <span class="legend-swatch legend-swatch--income"></span>
+    <span>Entrate</span>
+  </span>
+  <span class="legend-item">
+    <span class="legend-swatch legend-swatch--expense"></span>
+    <span>Uscite</span>
+  </span>
+</div>

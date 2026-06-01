@@ -1,0 +1,87 @@
+@use 'variables' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  width: 100%;
+  font-family: $font-display;
+  font-weight: 400;
+  font-size: $font-size-base;
+  letter-spacing: 0.03em;
+  padding: 0.875rem;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color $transition,
+    scale $transition,
+    opacity $transition;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    color: $primary-foreground;
+    background: $primary;
+
+    &:hover:not(:disabled) {
+      scale: 1.03;
+      background: $primary-600;
+    }
+
+    &:active:not(:disabled) {
+      scale: 0.97;
+    }
+  }
+
+  &--secondary {
+    color: $foreground;
+    background: color-mix(in srgb, $primary, transparent 70%);
+
+    &:hover:not(:disabled) {
+      scale: 1.03;
+      background: $primary-300;
+    }
+
+    &:active:not(:disabled) {
+      scale: 0.97;
+    }
+  }
+
+  &--outlined {
+    color: $foreground;
+    background: transparent;
+    border-color: $default-300;
+
+    &:hover:not(:disabled) {
+      scale: 1.03;
+    }
+
+    &:active:not(:disabled) {
+      scale: 0.97;
+    }
+  }
+
+  &--danger {
+    background: $danger-200;
+    color: $danger-700;
+
+    &:hover:not(:disabled) {
+      scale: 1.03;
+    }
+
+    &:active:not(:disabled) {
+      scale: 0.97;
+    }
+  }
+
+  &--icon {
+    width: auto;
+    flex-shrink: 0;
+  }
+}

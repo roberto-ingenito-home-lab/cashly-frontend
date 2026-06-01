@@ -1,0 +1,7 @@
+{
+  "/cashly-api": {
+    "target": "http://localhost:5248",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

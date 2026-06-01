@@ -1,0 +1,48 @@
+@use 'variables' as *;
+
+@mixin input-base {
+  width: 100%;
+  background: transparent;
+  border: 1px solid $default-300;
+  border-radius: $radius-sm;
+  padding: $space-3;
+  font-family: $font-display;
+  font-weight: 300;
+  color: $foreground;
+  outline: none;
+  transition: all $transition;
+
+  &::placeholder {
+    color: color-mix(in srgb, #{$foreground} 50%, transparent);
+    font-style: italic;
+  }
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: inset 0 0 0 1px $primary;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: $danger;
+    box-shadow: inset 0 0 0 1px $danger;
+  }
+}
+
+@mixin input-group-base {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-weight: 300;
+    margin-bottom: $space-2;
+    transition: color $transition;
+  }
+
+  &:focus-within label {
+    color: $primary;
+  }
+}

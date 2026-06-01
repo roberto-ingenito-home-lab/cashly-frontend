@@ -1,0 +1,73 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  min-width: 0;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-4 $space-6;
+  align-items: center;
+
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .summary-label {
+    font-size: $font-size-xs;
+    color: $default-500;
+  }
+
+  .summary-value {
+    font-size: $font-size-lg;
+    font-weight: 700;
+    color: $danger-600;
+  }
+
+  .summary-item:nth-child(2) .summary-value {
+    color: $foreground;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+  margin-left: auto;
+  font-size: $font-size-xs;
+  color: $default-600;
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  .legend-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    border-radius: 2px;
+
+    &--bar {
+      background-color: $danger-400;
+    }
+
+    &--line {
+      background: transparent;
+      border-top: 2px dashed $secondary-600;
+      height: 0;
+    }
+  }
+}
+
+.chart-wrapper {
+  width: 100%;
+}

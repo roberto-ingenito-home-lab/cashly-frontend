@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="icon-and-details">
+    <div [class]="'arrow arrow--' + (isIncome() ? 'income' : 'expense')">
+      <app-icon [weight]="600">{{ isIncome() ? 'north_east' : 'south_east' }}</app-icon>
+    </div>
+    <div class="details">
+      <p class="description">
+        {{ transaction().description || (isIncome() ? 'Entrata' : 'Uscita') }}
+      </p>
+
+      @if (category(); as c) {
+        <div class="category">
+          <app-icon [size]="16">{{ c.iconName ?? 'local_offer' }}</app-icon>
+          <p>{{ c.categoryName }}</p>
+        </div>
+      }
+
+      <div class="date">
+        <app-icon [size]="16">calendar_today</app-icon>
+        <p>{{ formatDate(transaction().transactionDate) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="amount-and-type">
+    <p [class]="'amount amount--' + (isIncome() ? 'income' : 'expense')">
+      {{
+        (isIncome() ? '+' : '-') +
+          transaction().amount.toLocaleString('it-IT', {
+            style: 'currency',
+            currency: 'EUR',
+          })
+      }}
+    </p>
+
+    <div [class]="'type-chip type-chip--' + (isIncome() ? 'income' : 'expense')">
+      {{ isIncome() ? 'Entrata' : 'Uscita' }}
+    </div>
+  </div>
+
+  <div>
+    <app-button variant="primary" icon="edit" [iconOnly]="true" (clicked)="onEdit()" />
+    <app-button variant="primary" icon="delete" [iconOnly]="true" (clicked)="onDelete()" />
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="summary">
+  <span class="summary-label">Saldo a fine periodo</span>
+  <span class="summary-value" [class.negative]="finalBalance() < 0">
+    {{ formatCurrency(finalBalance()) }}
+  </span>
+</div>
+
+<div class="chart-wrapper">
+  <apx-chart
+    [chart]="chart()"
+    [series]="series()"
+    [colors]="chartColors()"
+    [stroke]="stroke"
+    [fill]="fill()"
+    [dataLabels]="dataLabels"
+    [markers]="markers()"
+    [xaxis]="xaxis()"
+    [yaxis]="yaxis()"
+    [grid]="grid()"
+    [annotations]="annotations()"
+    [tooltip]="tooltip()"
+  />
+</div>

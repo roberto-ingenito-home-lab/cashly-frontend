@@ -1,0 +1,72 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  min-width: 0;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-4 $space-6;
+
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .summary-label {
+    font-size: $font-size-xs;
+    color: $default-500;
+  }
+
+  .summary-value {
+    font-size: $font-size-lg;
+    font-weight: 700;
+
+    &--income {
+      color: $success-600;
+    }
+
+    &--expense {
+      color: $danger-600;
+    }
+  }
+}
+
+.chart-wrapper {
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-4;
+  font-size: $font-size-xs;
+  color: $default-600;
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+  }
+
+  .legend-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+
+    &--income {
+      background-color: $success-500;
+    }
+
+    &--expense {
+      background-color: $danger-500;
+    }
+  }
+}

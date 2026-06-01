@@ -1,0 +1,63 @@
+@use 'variables' as *;
+
+.card {
+  background-color: $content1;
+  width: auto;
+  border: 1px solid $default-200;
+  border-radius: $radius-md;
+
+  display: flex;
+  flex-direction: row;
+  gap: $space-3;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1rem;
+}
+
+.icon-and-details {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 0;
+  gap: $space-3;
+  align-items: center;
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: $space-1;
+
+    .name {
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta {
+      font-size: $font-size-xs;
+      color: $default-500;
+    }
+  }
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+
+  border-radius: 3rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}

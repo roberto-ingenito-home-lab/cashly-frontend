@@ -1,0 +1,425 @@
+@use 'sass:map';
+@use 'sass:meta';
+
+// ─────────────────────────────────────────────────────────────
+// THEME — HeroUI palette
+// Mode switched at runtime via `data-theme` on <html>,
+// gestito da ThemeService.
+// ─────────────────────────────────────────────────────────────
+
+$default-mode: 'light' !default;
+
+$palettes: (
+  'light': (
+    'default': (
+      50: #f5f3f1,
+      100: #e8e3df,
+      200: #d1c7bd,
+      300: #baab9b,
+      400: #a38f79,
+      500: #9a8374,
+      600: #7d6a5e,
+      700: #605147,
+      800: #433831,
+      900: #261f1a,
+      'foreground': #ffffff,
+      'DEFAULT': #9a8374,
+    ),
+    'primary': (
+      50: #f2eeeb,
+      100: #e0d5cd,
+      200: #cdbcaf,
+      300: #baa391,
+      400: #a78a73,
+      500: #947155,
+      600: #795d46,
+      700: #5e4937,
+      800: #433528,
+      900: #282119,
+      'foreground': #ffffff,
+      'DEFAULT': #947155,
+    ),
+    'secondary': (
+      50: #eef2f1,
+      100: #d5e0dd,
+      200: #abc1ba,
+      300: #81a297,
+      400: #578374,
+      500: #4a7063,
+      600: #3c5a50,
+      700: #2f453e,
+      800: #21302b,
+      900: #141b19,
+      'foreground': #ffffff,
+      'DEFAULT': #4a7063,
+    ),
+    'success': (
+      50: #e8f5e9,
+      100: #c5e7c7,
+      200: #a1d9a5,
+      300: #7dcb83,
+      400: #59bd61,
+      500: #4caf50,
+      600: #3d8c41,
+      700: #2e6932,
+      800: #1f4623,
+      900: #102314,
+      'foreground': #ffffff,
+      'DEFAULT': #4caf50,
+    ),
+    'warning': (
+      50: #fff8e8,
+      100: #ffeec5,
+      200: #ffe3a1,
+      300: #ffd97d,
+      400: #ffce59,
+      500: #ffc435,
+      600: #d2a02b,
+      700: #a67c21,
+      800: #795817,
+      900: #4d340e,
+      'foreground': #000000,
+      'DEFAULT': #ffc435,
+    ),
+    'danger': (
+      50: #feeae9,
+      100: #fcc9c6,
+      200: #faa8a3,
+      300: #f88780,
+      400: #f6665d,
+      500: #f4453a,
+      600: #c93830,
+      700: #9e2b26,
+      800: #731e1c,
+      900: #481112,
+      'foreground': #ffffff,
+      'DEFAULT': #f4453a,
+    ),
+    'background': #faf8f6,
+    'foreground': #5a4a3e,
+    'content1': (
+      'DEFAULT': #f5f1ed,
+      'foreground': #000000,
+    ),
+    'content2': (
+      'DEFAULT': #ede7e1,
+      'foreground': #000000,
+    ),
+    'content3': (
+      'DEFAULT': #e5ddd5,
+      'foreground': #000000,
+    ),
+    'content4': (
+      'DEFAULT': #ddd3c9,
+      'foreground': #000000,
+    ),
+    'focus': #947155,
+    'overlay': #000000,
+  ),
+  'dark': (
+    'default': (
+      50: #1a1512,
+      100: #2d231c,
+      200: #403227,
+      300: #534031,
+      400: #664f3c,
+      500: #9a8374,
+      600: #b09d8f,
+      700: #c5b7aa,
+      800: #dbd1c5,
+      900: #f0ebe0,
+      'foreground': #ffffff,
+      'DEFAULT': #664f3c,
+    ),
+    'primary': (
+      50: #281f17,
+      100: #3f3225,
+      200: #574533,
+      300: #6e5841,
+      400: #866b4f,
+      500: #a18667,
+      600: #b39f7f,
+      700: #c5b997,
+      800: #d7d2af,
+      900: #e9ecc7,
+      'foreground': #000000,
+      'DEFAULT': #a18667,
+    ),
+    'secondary': (
+      50: #141c1a,
+      100: #212f2b,
+      200: #2e433d,
+      300: #3b564e,
+      400: #486a60,
+      500: #5f8a7d,
+      600: #7aa095,
+      700: #96b6ad,
+      800: #b1ccc5,
+      900: #cde2dd,
+      'foreground': #000000,
+      'DEFAULT': #5f8a7d,
+    ),
+    'success': (
+      50: #0d2613,
+      100: #15421f,
+      200: #1e5e2c,
+      300: #267a38,
+      400: #2f9645,
+      500: #4daf5f,
+      600: #6fc07d,
+      800: #b4deba,
+      900: #d6efd8,
+      'foreground': #000000,
+      'DEFAULT': #4daf5f,
+    ),
+    'warning': (
+      50: #4d3810,
+      100: #795819,
+      200: #a67823,
+      300: #d2982c,
+      400: #ffb836,
+      500: #ffc557,
+      600: #ffd178,
+      700: #ffdd99,
+      800: #ffe9ba,
+      900: #fff5db,
+      'foreground': #000000,
+      'DEFAULT': #ffb836,
+    ),
+    'danger': (
+      50: #481114,
+      100: #731c1f,
+      200: #9e282a,
+      300: #c93335,
+      400: #f43f40,
+      500: #f6605f,
+      600: #f8817e,
+      700: #faa29d,
+      800: #fcc3bc,
+      900: #fee4db,
+      'foreground': #000000,
+      'DEFAULT': #f6605f,
+    ),
+    'background': #1c1410,
+    'foreground': #d9cdc0,
+    'content1': (
+      'DEFAULT': #2d241d,
+      'foreground': #ffffff,
+    ),
+    'content2': (
+      'DEFAULT': #3e3229,
+      'foreground': #ffffff,
+    ),
+    'content3': (
+      'DEFAULT': #4f4036,
+      'foreground': #ffffff,
+    ),
+    'content4': (
+      'DEFAULT': #604e42,
+      'foreground': #ffffff,
+    ),
+    'focus': #a18667,
+    'overlay': #ffffff,
+  ),
+);
+
+// ─────────────────────────────────────────────────────────────
+// EMIT CSS CUSTOM PROPERTIES PER MODE
+// ─────────────────────────────────────────────────────────────
+
+@mixin _emit-palette($mode) {
+  $p: map.get($palettes, $mode);
+
+  @each $name, $value in $p {
+    @if meta.type-of($value) == 'map' {
+      @each $key, $shade in $value {
+        @if $shade != null {
+          @if $key == 'DEFAULT' {
+            --color-#{$name}: #{$shade};
+          } @else if $key == 'foreground' {
+            --color-#{$name}-foreground: #{$shade};
+          } @else {
+            --color-#{$name}-#{$key}: #{$shade};
+          }
+        }
+      }
+    } @else {
+      --color-#{$name}: #{$value};
+    }
+  }
+
+  color-scheme: #{$mode};
+}
+
+:root {
+  @include _emit-palette($default-mode);
+}
+
+[data-theme='light'] {
+  @include _emit-palette('light');
+}
+
+[data-theme='dark'] {
+  @include _emit-palette('dark');
+}
+
+// ─────────────────────────────────────────────────────────────
+// SASS ALIASES — puntano alle CSS variables, cambiano con data-theme.
+// ─────────────────────────────────────────────────────────────
+
+// Default
+$default: var(--color-default);
+$default-50: var(--color-default-50);
+$default-100: var(--color-default-100);
+$default-200: var(--color-default-200);
+$default-300: var(--color-default-300);
+$default-400: var(--color-default-400);
+$default-500: var(--color-default-500);
+$default-600: var(--color-default-600);
+$default-700: var(--color-default-700);
+$default-800: var(--color-default-800);
+$default-900: var(--color-default-900);
+$default-foreground: var(--color-default-foreground);
+
+// Primary
+$primary: var(--color-primary);
+$primary-50: var(--color-primary-50);
+$primary-100: var(--color-primary-100);
+$primary-200: var(--color-primary-200);
+$primary-300: var(--color-primary-300);
+$primary-400: var(--color-primary-400);
+$primary-500: var(--color-primary-500);
+$primary-600: var(--color-primary-600);
+$primary-700: var(--color-primary-700);
+$primary-800: var(--color-primary-800);
+$primary-900: var(--color-primary-900);
+$primary-foreground: var(--color-primary-foreground);
+
+// Secondary
+$secondary: var(--color-secondary);
+$secondary-50: var(--color-secondary-50);
+$secondary-100: var(--color-secondary-100);
+$secondary-200: var(--color-secondary-200);
+$secondary-300: var(--color-secondary-300);
+$secondary-400: var(--color-secondary-400);
+$secondary-500: var(--color-secondary-500);
+$secondary-600: var(--color-secondary-600);
+$secondary-700: var(--color-secondary-700);
+$secondary-800: var(--color-secondary-800);
+$secondary-900: var(--color-secondary-900);
+$secondary-foreground: var(--color-secondary-foreground);
+
+// Success
+$success: var(--color-success);
+$success-50: var(--color-success-50);
+$success-100: var(--color-success-100);
+$success-200: var(--color-success-200);
+$success-300: var(--color-success-300);
+$success-400: var(--color-success-400);
+$success-500: var(--color-success-500);
+$success-600: var(--color-success-600);
+// success-700 non è definito nel dark theme di HeroUI: fallback su -800.
+$success-700: var(--color-success-700, var(--color-success-800));
+$success-800: var(--color-success-800);
+$success-900: var(--color-success-900);
+$success-foreground: var(--color-success-foreground);
+
+// Warning
+$warning: var(--color-warning);
+$warning-50: var(--color-warning-50);
+$warning-100: var(--color-warning-100);
+$warning-200: var(--color-warning-200);
+$warning-300: var(--color-warning-300);
+$warning-400: var(--color-warning-400);
+$warning-500: var(--color-warning-500);
+$warning-600: var(--color-warning-600);
+$warning-700: var(--color-warning-700);
+$warning-800: var(--color-warning-800);
+$warning-900: var(--color-warning-900);
+$warning-foreground: var(--color-warning-foreground);
+
+// Danger
+$danger: var(--color-danger);
+$danger-50: var(--color-danger-50);
+$danger-100: var(--color-danger-100);
+$danger-200: var(--color-danger-200);
+$danger-300: var(--color-danger-300);
+$danger-400: var(--color-danger-400);
+$danger-500: var(--color-danger-500);
+$danger-600: var(--color-danger-600);
+$danger-700: var(--color-danger-700);
+$danger-800: var(--color-danger-800);
+$danger-900: var(--color-danger-900);
+$danger-foreground: var(--color-danger-foreground);
+
+// Background & Foreground
+$background: var(--color-background);
+$foreground: var(--color-foreground);
+
+// Content layers
+$content1: var(--color-content1);
+$content1-foreground: var(--color-content1-foreground);
+$content2: var(--color-content2);
+$content2-foreground: var(--color-content2-foreground);
+$content3: var(--color-content3);
+$content3-foreground: var(--color-content3-foreground);
+$content4: var(--color-content4);
+$content4-foreground: var(--color-content4-foreground);
+
+// Focus & Overlay
+$focus: var(--color-focus);
+$overlay: var(--color-overlay);
+
+// ─────────────────────────────────────────────────────────────
+// TYPOGRAPHY
+// ─────────────────────────────────────────────────────────────
+
+$font-display: 'Lora', Georgia, serif;
+$font-ui: 'Inter', system-ui, sans-serif;
+
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+
+// ─────────────────────────────────────────────────────────────
+// SPACING — 4px grid
+// ─────────────────────────────────────────────────────────────
+
+$space-1: 0.25rem; //  4px
+$space-2: 0.5rem; //  8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-6: 1.5rem; // 24px
+$space-8: 2rem; // 32px
+$space-12: 3rem; // 48px
+$space-16: 4rem; // 64px
+
+// ─────────────────────────────────────────────────────────────
+// RADIUS
+// ─────────────────────────────────────────────────────────────
+
+$radius-sm: 0.5rem;
+$radius-md: 1rem;
+$radius-lg: 2rem;
+
+// ─────────────────────────────────────────────────────────────
+// Z-INDEX
+// ─────────────────────────────────────────────────────────────
+
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-modal: 300;
+$z-toast: 400;
+
+// ─────────────────────────────────────────────────────────────
+// MOTION & LAYOUT
+// ─────────────────────────────────────────────────────────────
+
+$transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+$nav-height: 4rem;
+$layout-padding-x: 1.5rem;
+$max-width: 80rem;

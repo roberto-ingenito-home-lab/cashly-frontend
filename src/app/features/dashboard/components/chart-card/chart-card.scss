@@ -1,0 +1,105 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+
+  background-color: $content1;
+  border: 1px solid $default-200;
+  border-radius: $radius-md;
+
+  padding: $space-4;
+
+  @include breakpoint('md') {
+    padding: $space-6;
+  }
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    min-width: 0;
+
+    h2 {
+      font-size: $font-size-lg;
+      font-weight: 700;
+      line-height: 1.2;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    p {
+      font-size: $font-size-sm;
+      color: $default-500;
+      text-transform: capitalize;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: $space-1;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2rem;
+    height: 2rem;
+
+    border-radius: 999px;
+    border: 1px solid $default-200;
+    background: transparent;
+    color: $foreground;
+
+    cursor: pointer;
+    transition:
+      background-color $transition,
+      opacity $transition;
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, $primary, transparent 85%);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.chart-body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  min-width: 0;
+  min-height: 0;
+}
+
+:host(.is-fullscreen) {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+  padding: $space-6;
+  background-color: $content1;
+
+  .chart-body {
+    flex: 1;
+    min-height: 0;
+  }
+}

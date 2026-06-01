@@ -1,0 +1,21 @@
+<header>
+  <div class="title">
+    <h1>Categorie</h1>
+    <p>Organizza le tue transazioni per categoria</p>
+  </div>
+
+  <div class="actions">
+    <app-button variant="primary" icon="add_2" (clicked)="openCategoryDialog()">
+      Nuova categoria
+    </app-button>
+  </div>
+</header>
+
+<main>
+  <p>{{ categoriesStore.state()?.length ?? 0 }} categorie</p>
+  <div class="category-list">
+    @for (item of categoriesStore.state(); track item.categoryId) {
+      <app-category-card [category]="item" />
+    }
+  </div>
+</main>

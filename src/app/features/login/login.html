@@ -1,0 +1,50 @@
+<div class="body">
+  <header>
+    <h1>Bentornato</h1>
+    <p>Accedi al tuo account per continuare</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-input
+      label="Email"
+      type="email"
+      placeholder="mario@esempio.it"
+      autocomplete="email"
+      formControlName="email"
+      [hasError]="form.controls.email.touched && form.controls.email.invalid"
+    >
+      @if (form.controls.email.touched && form.controls.email.errors) {
+        @if (form.controls.email.errors['required']) {
+          L'email è obbligatoria
+        } @else if (form.controls.email.errors['email']) {
+          Inserisci un'email valida
+        }
+      }
+    </app-input>
+
+    <app-input
+      label="Password"
+      type="password"
+      placeholder="••••••"
+      autocomplete="current-password"
+      formControlName="password"
+      [hasError]="form.controls.password.touched && form.controls.password.invalid"
+    >
+      @if (form.controls.password.touched && form.controls.password.errors) {
+        @if (form.controls.password.errors['required']) {
+          La password è obbligatoria
+        }
+      }
+    </app-input>
+
+    <div class="forgot-link-container">
+      <a routerLink="/forgot-password" class="forgot-link">Hai dimenticato la password?</a>
+    </div>
+
+    <app-button type="submit" variant="primary">Accedi</app-button>
+  </form>
+
+  <footer>
+    <p>Non hai un account? <a routerLink="/signup">Registrati</a></p>
+  </footer>
+</div>

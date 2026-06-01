@@ -1,0 +1,45 @@
+<header>
+  <div class="title">
+    <h2>{{ title() }}</h2>
+    <p>{{ subtitle() }}</p>
+  </div>
+
+  <div class="actions">
+    @if (showNav()) {
+      <button
+        type="button"
+        class="icon-btn"
+        [disabled]="!canGoBack()"
+        [attr.aria-label]="'Periodo precedente'"
+        (click)="back.emit()"
+      >
+        <app-icon [size]="20" [weight]="500">chevron_left</app-icon>
+      </button>
+      <button
+        type="button"
+        class="icon-btn"
+        [disabled]="!canGoForward()"
+        [attr.aria-label]="'Periodo successivo'"
+        (click)="forward.emit()"
+      >
+        <app-icon [size]="20" [weight]="500">chevron_right</app-icon>
+      </button>
+    }
+
+    <button
+      type="button"
+      class="icon-btn"
+      [attr.aria-label]="isFullscreen() ? 'Esci da schermo intero' : 'Schermo intero'"
+      [attr.aria-pressed]="isFullscreen()"
+      (click)="toggleFullscreen()"
+    >
+      <app-icon [size]="20" [weight]="500">
+        {{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}
+      </app-icon>
+    </button>
+  </div>
+</header>
+
+<div class="chart-body">
+  <ng-content />
+</div>

@@ -1,0 +1,67 @@
+<header class="page-header">
+  <div class="title">
+    <h1>Dashboard</h1>
+    <p>Panoramica delle tue finanze</p>
+  </div>
+</header>
+
+<div class="chart-grid">
+  <app-chart-card
+    class="chart-distribution"
+    title="Distribuzione spese"
+    [subtitle]="monthSubtitle()"
+    [canGoBack]="canGoBackMonth()"
+    [canGoForward]="canGoForwardMonth()"
+    (back)="goBackMonth()"
+    (forward)="goForwardMonth()"
+  >
+    <app-expense-distribution-chart
+      [transactions]="transactions()"
+      [year]="selectedYear()"
+      [month]="selectedMonth()"
+      [currency]="userCurrency()"
+    />
+  </app-chart-card>
+
+  <app-chart-card
+    class="chart-balance"
+    title="Saldo cumulativo"
+    subtitle="Storico totale"
+    [showNav]="false"
+  >
+    <app-cumulative-balance-chart [transactions]="transactions()" [currency]="userCurrency()" />
+  </app-chart-card>
+
+  <app-chart-card
+    class="chart-daily"
+    title="Andamento giornaliero"
+    [subtitle]="monthSubtitle()"
+    [canGoBack]="canGoBackMonth()"
+    [canGoForward]="canGoForwardMonth()"
+    (back)="goBackMonth()"
+    (forward)="goForwardMonth()"
+  >
+    <app-daily-trend-chart
+      [transactions]="transactions()"
+      [year]="selectedYear()"
+      [month]="selectedMonth()"
+      [currency]="userCurrency()"
+    />
+  </app-chart-card>
+
+  <app-chart-card
+    class="chart-yearly"
+    title="Panoramica annuale"
+    [subtitle]="yearSubtitle()"
+    [canGoBack]="canGoBackYear()"
+    [canGoForward]="canGoForwardYear()"
+    (back)="goBackYear()"
+    (forward)="goForwardYear()"
+  >
+    <app-yearly-overview-chart
+      [transactions]="transactions()"
+      [year]="selectedYear()"
+      [currency]="userCurrency()"
+    />
+  </app-chart-card>
+</div>

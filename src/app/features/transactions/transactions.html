@@ -1,0 +1,81 @@
+<header>
+  <div class="title">
+    <h1>Transazioni</h1>
+    <p>Gestisci le tue entrate e uscite</p>
+  </div>
+
+  <div class="actions">
+    <app-button variant="secondary" icon="filter_alt" (clicked)="openFilters()">
+      Filtri{{ hasActiveFilters() ? ' •' : '' }}
+    </app-button>
+    <app-button variant="primary" icon="add_2" (clicked)="openTransactionDialog()">
+      Nuova transazione
+    </app-button>
+  </div>
+</header>
+
+<div class="statistic-cards">
+  <div class="income-card">
+    <div class="card-details">
+      <p>Entrate</p>
+      <p>
+        {{
+          statistics().income.toLocaleString('it-IT', {
+            style: 'currency',
+            currency: userCurrency(),
+          })
+        }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--income">
+      <app-icon [weight]="600">north_east</app-icon>
+    </div>
+  </div>
+
+  <div class="expense-card">
+    <div class="card-details">
+      <p>Uscite</p>
+      <p>
+        {{
+          statistics().expense.toLocaleString('it-IT', {
+            style: 'currency',
+            currency: userCurrency(),
+          })
+        }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--expense">
+      <app-icon [weight]="600">south_east</app-icon>
+    </div>
+  </div>
+
+  <div class="balance-card">
+    <div class="card-details">
+      <p>Bilancio</p>
+      <p>
+        {{
+          statistics().balance.toLocaleString('it-IT', {
+            style: 'currency',
+            currency: userCurrency(),
+          })
+        }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--balance">
+      <app-icon [weight]="600">leaderboard</app-icon>
+    </div>
+  </div>
+</div>
+
+<main>
+  <p>{{ filteredTransactions()?.length ?? 0 }} transazioni</p>
+  <div class="transaction-list">
+    @for (item of filteredTransactions(); track item.transactionId) {
+      @defer (on viewport) {
+        <app-transaction-card [transaction]="item" />
+      } @placeholder {
+        <div class="transaction-placeholder"></div>
+      }
+    }
+  </div>
+</main>

@@ -1,0 +1,47 @@
+@if (hasData()) {
+  <div class="donut-and-legend">
+    <div class="donut">
+      <apx-chart
+        [chart]="chart()"
+        [series]="series()"
+        [labels]="labels()"
+        [colors]="chartColors()"
+        [plotOptions]="plotOptions"
+        [stroke]="stroke"
+        [dataLabels]="dataLabels"
+        [legend]="legend"
+        [tooltip]="tooltip"
+        [states]="states"
+      />
+      <div class="donut-center">
+        @if (selectedSlice(); as s) {
+          <span class="donut-label">{{ s.label }}</span>
+          <span class="donut-value">{{ formatAmount(s.amount) }}</span>
+        } @else {
+          <span class="donut-label">Totale</span>
+          <span class="donut-value">{{ formatAmount(total()) }}</span>
+        }
+      </div>
+    </div>
+
+    <ul class="legend">
+      @for (slice of slices(); track slice.key) {
+        <li>
+          <button
+            type="button"
+            class="legend-item"
+            [class.is-selected]="selectedKey() === slice.key"
+            [attr.aria-pressed]="selectedKey() === slice.key"
+            (click)="toggleSelection(slice.key)"
+          >
+            <span class="dot" [style.background-color]="slice.color"></span>
+            <span class="label">{{ slice.label }}</span>
+            <span class="pct">{{ (slice.percent * 100).toFixed(1) }}%</span>
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+} @else {
+  <div class="empty">Nessuna uscita in questo mese</div>
+}

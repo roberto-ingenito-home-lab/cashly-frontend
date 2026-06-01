@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>{{ isEdit() ? 'Modifica transazione' : 'Nuova transazione' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="transaction-form" (ngSubmit)="submit()">
+    <div class="type-toggle" role="radiogroup" aria-label="Tipo transazione">
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="form.controls.type.value === TransactionType.Expense"
+        [class.active]="form.controls.type.value === TransactionType.Expense"
+        class="type-option type-option--expense"
+        (click)="form.controls.type.setValue(TransactionType.Expense)"
+      >
+        Uscita
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="form.controls.type.value === TransactionType.Income"
+        [class.active]="form.controls.type.value === TransactionType.Income"
+        class="type-option type-option--income"
+        (click)="form.controls.type.setValue(TransactionType.Income)"
+      >
+        Entrata
+      </button>
+    </div>
+
+    <app-input
+      label="Importo"
+      type="number"
+      placeholder="0,00"
+      formControlName="amount"
+      [hasError]="form.controls.amount.touched && form.controls.amount.invalid"
+    >
+      @if (form.controls.amount.touched && form.controls.amount.invalid) {
+        Inserisci un importo maggiore di zero.
+      }
+    </app-input>
+
+    <div class="field-row">
+      <app-input label="Data" type="date" formControlName="transactionDate" />
+      <app-input label="Ora" type="time" formControlName="transactionTime" />
+    </div>
+
+    <div class="field">
+      <label for="tx-category">Categoria</label>
+      <select id="tx-category" formControlName="categoryId">
+        <option [ngValue]="null">Nessuna</option>
+        @for (cat of categoriesStore.state(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        }
+      </select>
+    </div>
+
+    <app-textarea label="Descrizione" placeholder="Opzionale" formControlName="description" />
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ isEdit() ? 'Salva' : 'Crea' }}
+  </app-button>
+</mat-dialog-actions>

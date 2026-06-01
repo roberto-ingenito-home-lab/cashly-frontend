@@ -1,0 +1,85 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use 'typography';
+@use 'variables';
+@use 'reset';
+@use '@fontsource-variable/material-symbols-rounded/full.css';
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Lora,
+      density: 0,
+    )
+  );
+
+  // Rimappa i token di Material sul design system custom,
+  // così i componenti Material (sidenav, list, ecc.) usano i tuoi colori
+  // senza che Material sovrascriva testo/sfondo globali.
+  --mat-sys-surface: var(--color-background);
+  --mat-sys-on-surface: var(--color-foreground);
+  --mat-sys-surface-container: var(--color-content1);
+  --mat-sys-surface-container-low: var(--color-content1);
+  --mat-sys-surface-container-high: var(--color-content2);
+  --mat-sys-surface-variant: var(--color-content2);
+  --mat-sys-on-surface-variant: var(--color-foreground);
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: var(--color-primary-foreground);
+  --mat-sys-secondary: var(--color-secondary);
+  --mat-sys-on-secondary: var(--color-secondary-foreground);
+  --mat-sys-outline: var(--color-default-200);
+  --mat-sys-outline-variant: var(--color-default-100);
+  --mat-sys-background: var(--color-background);
+  --mat-sys-on-background: var(--color-foreground);
+}
+
+// mat.theme() imposta color/background su html via i token sopra;
+// con il remap i tuoi valori vincono, ma esplicitiamo per sicurezza.
+html,
+body {
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
+
+.no-transitions * {
+  transition: none !important;
+  animation: none !important;
+}
+
+// colore dello sfondo dietro ai dialog material
+.cdk-overlay-dark-backdrop {
+  background: rgba(63, 63, 63, 0.4);
+}
+
+// Tooltip dei grafici ApexCharts: usa i colori del tema corrente
+// dell'app (CSS custom properties) invece della palette di default.
+.apexcharts-tooltip {
+  background: var(--color-content1) !important;
+  border-color: var(--color-default-200) !important;
+  color: var(--color-foreground) !important;
+  box-shadow: 0px 0px 12px 0px color-mix(in srgb, var(--mat-sys-on-surface), transparent 60%) !important;
+}
+
+.apexcharts-tooltip-title {
+  background: var(--color-content2) !important;
+  border-bottom-color: var(--color-default-200) !important;
+  color: var(--color-foreground) !important;
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded Variable';
+  visibility: hidden;
+}
+
+.icons-ready .material-symbols-rounded {
+  visibility: visible;
+}

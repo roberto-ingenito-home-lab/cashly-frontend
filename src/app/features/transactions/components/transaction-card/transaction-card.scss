@@ -1,0 +1,137 @@
+@use 'variables' as *;
+
+.card {
+  background-color: $content1;
+  width: auto;
+  border: 1px solid $default-200;
+  border-radius: $radius-md;
+
+  display: flex;
+  flex-direction: row;
+  gap: $space-3;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1rem;
+
+  & > *:nth-child(3) {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+}
+
+.icon-and-details {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 0;
+  gap: $space-3;
+  align-items: center;
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: $space-1;
+
+    .description {
+      font-weight: 700;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .category {
+      display: flex;
+      align-items: center;
+      gap: $space-1;
+
+      color: $default-500;
+
+      & > p {
+        font-size: $font-size-sm;
+      }
+    }
+
+    .date {
+      display: flex;
+      align-items: center;
+      gap: $space-1;
+
+      color: $default-500;
+
+      & > p {
+        font-size: $font-size-xs;
+      }
+    }
+  }
+}
+
+.amount-and-type {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: end;
+  gap: $space-2;
+
+  .amount {
+    font-weight: bold !important;
+    font-size: $font-size-xl;
+
+    &--expense {
+      color: $danger-600;
+    }
+
+    &--income {
+      color: $success-600;
+    }
+  }
+
+  .type-chip {
+    padding: $space-1 $space-2;
+
+    font-weight: bold;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+
+    font-size: $font-size-xs;
+
+    border-radius: $radius-lg;
+
+    &--expense {
+      background-color: $danger-100;
+      color: $danger-700;
+    }
+
+    &--income {
+      background-color: $success-100;
+      color: $success-600;
+    }
+  }
+}
+
+.arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3rem;
+  min-width: 3rem;
+
+  height: 3rem;
+  min-height: 3rem;
+
+  border-radius: 3rem;
+
+  &--expense {
+    background-color: $danger-100;
+    color: $danger-600;
+  }
+
+  &--income {
+    background-color: $success-100;
+    color: $success-600;
+  }
+}

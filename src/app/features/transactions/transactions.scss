@@ -1,0 +1,166 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+@mixin statistic-card {
+  display: flex;
+  align-items: center;
+
+  gap: $space-2;
+
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+
+  padding: $space-4;
+
+  border-radius: $radius-md;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}
+
+header {
+  display: flex;
+  gap: $space-4;
+
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+
+  @include breakpoint('md') {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  .actions {
+    display: flex;
+    width: 100%;
+    gap: $space-2;
+
+    @include breakpoint('md') {
+      width: auto;
+    }
+
+    & > *:nth-child(1) {
+      flex: 1;
+    }
+
+    & > *:nth-child(2) {
+      flex: 2;
+
+      @include breakpoint('md') {
+        flex: initial;
+      }
+    }
+  }
+}
+
+.statistic-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+
+  @include breakpoint('md') {
+    flex-direction: row;
+  }
+
+  .card-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $space-1;
+
+    p:nth-of-type(1) {
+      font-size: $font-size-sm;
+      font-weight: 500;
+    }
+
+    p:nth-of-type(2) {
+      font-size: $font-size-2xl;
+      font-weight: bold;
+    }
+  }
+
+  .income-card {
+    @include statistic-card;
+
+    background-color: $success-100;
+    border: 2px solid $success-400;
+    color: $success-600;
+  }
+
+  .expense-card {
+    @include statistic-card;
+
+    background-color: $danger-100;
+    border: 2px solid $danger-400;
+    color: $danger-700;
+  }
+
+  .balance-card {
+    @include statistic-card;
+
+    background-color: $primary-100;
+    border: 2px solid $primary-400;
+    color: $primary-700;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.transaction-placeholder {
+  height: 122px;
+  border-radius: $radius-md;
+  background-color: $content1;
+  border: 1px solid $default-200;
+}
+
+.statistic-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3rem;
+  min-width: 3rem;
+
+  height: 3rem;
+  min-height: 3rem;
+
+  border-radius: 3rem;
+
+  &--expense {
+    background-color: color-mix(in srgb, $danger-300, transparent 50%);
+    color: $danger-700;
+  }
+
+  &--income {
+    background-color: color-mix(in srgb, $success-300, transparent 50%);
+    color: $success-600;
+  }
+
+  &--balance {
+    background-color: color-mix(in srgb, $primary-300, transparent 50%);
+    color: $primary-700;
+  }
+}
