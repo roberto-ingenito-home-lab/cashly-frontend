@@ -1,0 +1,137 @@
+<header>
+  <div class="title">
+    <h1>Abbonamenti</h1>
+    <p>Gestisci le tue entrate e uscite ricorrenti</p>
+  </div>
+
+  <div class="actions">
+    <app-button variant="primary" icon="add" (clicked)="openSubscriptionDialog()">
+      Nuovo abbonamento
+    </app-button>
+  </div>
+</header>
+
+<div class="statistic-cards">
+  <div class="expense-card">
+    <div class="card-details">
+      <p>Costi Ricorrenti (Mensile)</p>
+      <p>
+        {{ formatCurrency(monthlyExpenses()) }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--expense">
+      <app-icon [weight]="600">credit_card</app-icon>
+    </div>
+  </div>
+
+  <div class="income-card">
+    <div class="card-details">
+      <p>Entrate Ricorrenti (Mensile)</p>
+      <p>
+        {{ formatCurrency(monthlyIncomes()) }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--income">
+      <app-icon [weight]="600">account_balance_wallet</app-icon>
+    </div>
+  </div>
+
+  <div class="balance-card">
+    <div class="card-details">
+      <p>Impatto Netto (Mensile)</p>
+      <p [class.amount--negative]="monthlyIncomes() - monthlyExpenses() < 0" [class.amount--positive]="monthlyIncomes() - monthlyExpenses() >= 0">
+        {{ formatCurrency(monthlyIncomes() - monthlyExpenses()) }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--balance">
+      <app-icon [weight]="600">analytics</app-icon>
+    </div>
+  </div>
+</div>
+
+<main>
+  <p>{{ subscriptions().length }} abbonamenti registrati</p>
+
+  @if (subscriptions().length === 0) {
+    <div class="empty-state">
+      <app-icon [size]="48">credit_card_off</app-icon>
+      <p>Nessun abbonamento registrato.</p>
+      <p>Aggiungi Netflix, Spotify o l'affitto per monitorarli e registrarli comodamente.</p>
+    </div>
+  } @else {
+    <div class="subscription-list">
+      @for (item of subscriptions(); track item.subscriptionId) {
+        <div class="subscription-card">
+          
+          <!-- Raggruppamento per la riga principale su mobile -->
+          <div class="mobile-row-group">
+            
+            <!-- 1. Icona / Badge -->
+            <div class="badge-container" [class]="'badge--' + (item.type === 'income' ? 'income' : 'expense')">
+              <app-icon [weight]="600">{{ item.type === 'income' ? 'account_balance_wallet' : 'credit_card' }}</app-icon>
+            </div>
+
+            <!-- 2. Colonna Dettagli (Nome + Categoria/Ricorrenza) -->
+            <div class="info-column">
+              <p class="name">{{ item.name }}</p>
+              
+              <div class="meta-row">
+                @if (getCategory(item.categoryId); as c) {
+                  <div class="meta-item category-tag" [style.color]="c.colorHex" [style.backgroundColor]="c.colorHex + '15'">
+                    <app-icon [size]="14">{{ c.iconName ?? 'local_offer' }}</app-icon>
+                    <span>{{ c.categoryName }}</span>
+                  </div>
+                }
+                
+                <div class="meta-item frequency-tag">
+                  <app-icon [size]="14">repeat</app-icon>
+                  <span>{{ getFrequencyLabel(item.frequency) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Raggruppamento Importo + Azioni Modifica/Elimina (destra su mobile) -->
+            <div class="mobile-right-column">
+              <!-- 5. Importo -->
+              <div class="amount-container">
+                <p [class]="'amount amount--' + (item.type === 'income' ? 'income' : 'expense')">
+                  {{ (item.type === 'income' ? '+' : '-') + formatCurrency(item.amount) }}
+                </p>
+              </div>
+
+              <!-- 6. Colonna Pulsanti Modifica/Elimina -->
+              <div class="control-actions">
+                <app-button variant="secondary" icon="edit" [iconOnly]="true" (clicked)="openSubscriptionDialog(item)" />
+                <app-button variant="danger" icon="delete" [iconOnly]="true" (clicked)="onDelete(item)" />
+              </div>
+            </div>
+            
+          </div>
+
+          <!-- 3. Colonna Inizio / Ultimo pagamento -->
+          <div class="dates-column">
+            <p>Inizio: <strong>{{ formatDate(item.startDate) }}</strong></p>
+            @if (item.endDate) {
+              <p>Fine: <strong>{{ formatDate(item.endDate) }}</strong></p>
+            }
+            <p>Ultimo: <strong>{{ formatDate(item.lastPaymentDate) }}</strong></p>
+          </div>
+
+          <!-- 4. Pulsante Registra Spesa (Allineato al centro verticalmente in desktop) -->
+          <div class="register-action">
+            <app-button 
+              variant="primary" 
+              icon="add_shopping_cart" 
+              [iconOnly]="false" 
+              (clicked)="onPostTransaction(item)"
+              title="Registra spesa corrente"
+            >
+              Registra spesa
+            </app-button>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+</main>

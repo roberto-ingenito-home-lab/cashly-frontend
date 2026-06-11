@@ -9,8 +9,10 @@ import { Dashboard } from './features/dashboard/dashboard';
 import { Categories } from './features/categories/categories';
 import { Transactions } from './features/transactions/transactions';
 import { Layout } from './features/layout/layout';
+import { Subscriptions } from './features/subscriptions/subscriptions';
 
 export const routes: Routes = [
+
   {
     path: 'login',
     canActivate: [guestGuard],
@@ -51,7 +53,13 @@ export const routes: Routes = [
         component: Transactions,
         data: { title: 'Transazioni' },
       },
+      {
+        path: 'subscriptions',
+        component: Subscriptions,
+        data: { title: 'Abbonamenti' },
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
     ],
   },
   { path: '**', redirectTo: 'login' },

@@ -19,9 +19,11 @@ import { ThemeService } from '../../core/services/theme.service';
 import { AuthStore } from '../../core/services/auth.store';
 import { CategoriesStore } from '../../core/services/categories.store';
 import { TransactionsStore } from '../../core/services/transactions.store';
+import { SubscriptionsStore } from '../../core/services/subscriptions.store';
 import { Icon } from '../../shared/components/icon/icon';
 import { SwUpdate } from '@angular/service-worker';
 import { toast } from 'ngx-sonner';
+
 
 @Component({
   selector: 'app-layout',
@@ -43,6 +45,7 @@ export class Layout implements OnInit {
   private auth = inject(AuthStore);
   private categoriesStore = inject(CategoriesStore);
   private transactionsStore = inject(TransactionsStore);
+  private subscriptionsStore = inject(SubscriptionsStore);
   protected themeService = inject(ThemeService);
   private updates = inject(SwUpdate);
 
@@ -50,6 +53,7 @@ export class Layout implements OnInit {
     { route: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
     { route: 'categories', label: 'Categorie', icon: 'category' },
     { route: 'transactions', label: 'Transazioni', icon: 'receipt_long' },
+    { route: 'subscriptions', label: 'Abbonamenti', icon: 'credit_card' },
   ];
 
   isDark = computed(() => this.themeService.theme() === 'dark');
@@ -60,10 +64,12 @@ export class Layout implements OnInit {
     await Promise.all([
       this.categoriesStore.init(),
       this.transactionsStore.init(),
+      this.subscriptionsStore.init(),
     ]);
 
     this.isLoading.set(false);
   }
+
 
   toggleTheme() {
     this.themeService.toggle();

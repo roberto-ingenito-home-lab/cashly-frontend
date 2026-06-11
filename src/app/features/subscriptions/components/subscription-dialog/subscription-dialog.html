@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>{{ isEdit() ? 'Modifica abbonamento' : 'Nuovo abbonamento' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="subscription-form" (ngSubmit)="submit()">
+    <div class="type-toggle" role="radiogroup" aria-label="Tipo abbonamento">
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="form.controls.type.value === TransactionType.Expense"
+        [class.active]="form.controls.type.value === TransactionType.Expense"
+        class="type-option type-option--expense"
+        (click)="form.controls.type.setValue(TransactionType.Expense)"
+      >
+        Spesa Ricorrente
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="form.controls.type.value === TransactionType.Income"
+        [class.active]="form.controls.type.value === TransactionType.Income"
+        class="type-option type-option--income"
+        (click)="form.controls.type.setValue(TransactionType.Income)"
+      >
+        Entrata Ricorrente
+      </button>
+    </div>
+
+    <app-input
+      label="Nome Abbonamento"
+      type="text"
+      placeholder="es. Netflix, Spotify, Affitto"
+      formControlName="name"
+      [hasError]="form.controls.name.touched && form.controls.name.invalid"
+    >
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        Inserisci un nome valido (max 150 caratteri).
+      }
+    </app-input>
+
+    <app-input
+      [label]="form.controls.type.value === TransactionType.Expense ? 'Costo' : 'Importo'"
+      type="number"
+      placeholder="0,00"
+      formControlName="amount"
+      [hasError]="form.controls.amount.touched && form.controls.amount.invalid"
+    >
+
+      @if (form.controls.amount.touched && form.controls.amount.invalid) {
+        Inserisci un importo maggiore di zero.
+      }
+    </app-input>
+
+    <div class="field">
+      <label for="sub-frequency">Ricorrenza / Frequenza</label>
+      <select id="sub-frequency" formControlName="frequency">
+        @for (freq of frequencies; track freq.value) {
+          <option [value]="freq.value">{{ freq.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="field-row">
+      <app-input label="Data Inizio" type="date" formControlName="startDate" />
+      <app-input label="Data Fine (Opzionale)" type="date" formControlName="endDate" />
+    </div>
+
+    <div class="field">
+      <label for="sub-category">Categoria</label>
+      <select id="sub-category" formControlName="categoryId">
+        <option [ngValue]="null">Nessuna</option>
+        @for (cat of categoriesStore.state(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        }
+      </select>
+    </div>
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ isEdit() ? 'Salva' : 'Crea' }}
+  </app-button>
+</mat-dialog-actions>

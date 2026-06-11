@@ -1,0 +1,376 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+@mixin statistic-card {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: $space-4;
+  border-radius: $radius-md;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}
+
+header {
+  display: flex;
+  gap: $space-4;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+
+  @include breakpoint('md') {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  .actions {
+    display: flex;
+    width: 100%;
+    gap: $space-2;
+
+    @include breakpoint('md') {
+      width: auto;
+    }
+  }
+}
+
+.statistic-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+
+  @include breakpoint('md') {
+    flex-direction: row;
+  }
+
+  .card-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $space-1;
+
+    p:nth-of-type(1) {
+      font-size: $font-size-sm;
+      font-weight: 500;
+    }
+
+    p:nth-of-type(2) {
+      font-size: $font-size-2xl;
+      font-weight: bold;
+    }
+
+    .amount--negative {
+      color: $danger-600;
+    }
+
+    .amount--positive {
+      color: $success-600;
+    }
+  }
+
+  .income-card {
+    @include statistic-card;
+    background-color: $success-100;
+    border: 2px solid $success-400;
+    color: $success-600;
+  }
+
+  .expense-card {
+    @include statistic-card;
+    background-color: $danger-100;
+    border: 2px solid $danger-400;
+    color: $danger-700;
+  }
+
+  .balance-card {
+    @include statistic-card;
+    background-color: $primary-100;
+    border: 2px solid $primary-400;
+    color: $primary-700;
+  }
+}
+
+.statistic-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+
+  &--expense {
+    background-color: color-mix(in srgb, $danger-300, transparent 50%);
+    color: $danger-700;
+  }
+
+  &--income {
+    background-color: color-mix(in srgb, $success-300, transparent 50%);
+    color: $success-600;
+  }
+
+  &--balance {
+    background-color: color-mix(in srgb, $primary-300, transparent 50%);
+    color: $primary-700;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-12;
+  background-color: $content1;
+  border: 1px dashed $default-300;
+  border-radius: $radius-lg;
+  text-align: center;
+  color: $default-500;
+  gap: $space-2;
+}
+
+.subscription-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.subscription-card {
+  background-color: $content1;
+  border: 1px solid $default-200;
+  border-radius: $radius-md;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  // --- MOBILE LAYOUT ---
+  .mobile-row-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    width: 100%;
+  }
+
+  .badge-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    min-width: 3.5rem;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    border-radius: $radius-md;
+
+    &.badge--expense {
+      background-color: $danger-100;
+      color: $danger-600;
+    }
+
+    &.badge--income {
+      background-color: $success-100;
+      color: $success-600;
+    }
+  }
+
+  .info-column {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    flex: 1;
+    min-width: 0;
+
+    .name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: $foreground;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $space-2;
+      align-items: center;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: $space-1;
+      padding: $space-1 $space-2;
+      border-radius: $radius-sm;
+      font-size: $font-size-xs;
+      font-weight: 500;
+    }
+
+    .category-tag {
+      color: $default-600;
+      background-color: $default-100;
+    }
+
+    .frequency-tag {
+      color: $primary-600;
+      background-color: $primary-100;
+    }
+  }
+
+  .mobile-right-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $space-2;
+    flex-shrink: 0;
+  }
+
+  .amount-container {
+    .amount {
+      font-size: 1.25rem;
+      font-weight: 800;
+      white-space: nowrap;
+
+      &--expense {
+        color: $danger-600;
+      }
+
+      &--income {
+        color: $success-600;
+      }
+    }
+  }
+
+  .control-actions {
+    display: flex;
+    gap: $space-1;
+  }
+
+  .dates-column {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    color: $default-600;
+    font-size: $font-size-sm;
+    padding-left: 0.5rem;
+    border-left: 2px solid $default-200;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .register-action {
+    display: flex;
+    width: 100%;
+
+    app-button {
+      width: 100%;
+      ::ng-deep button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  // --- DESKTOP LAYOUT (>= 768px) ---
+  @include breakpoint('md') {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-6;
+
+    // "Annulla" il container principale per srotolare i figli sulla riga
+    .mobile-row-group {
+      display: contents;
+    }
+
+    .badge-container {
+      order: 1;
+      flex-shrink: 0;
+    }
+
+    .info-column {
+      order: 2;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dates-column {
+      order: 3;
+      flex: 0 0 auto;
+      padding-left: 0;
+      border-left: none;
+      gap: 2px;
+    }
+
+
+    .register-action {
+      order: 4;
+      width: auto;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center; // allinea al centro verticalmente
+
+      app-button {
+        width: auto;
+        ::ng-deep button {
+          width: auto;
+        }
+      }
+    }
+
+    // Mantiene la colonna per l'importo e i tasti modifica/elimina
+    .mobile-right-column {
+      order: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: $space-2;
+      flex-shrink: 0;
+    }
+
+    .amount-container {
+      .amount {
+        font-size: 1.35rem;
+      }
+    }
+
+    .control-actions {
+      display: flex;
+      gap: $space-2;
+    }
+  }
+
+
+}
