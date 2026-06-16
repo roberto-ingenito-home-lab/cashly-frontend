@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
 
-  padding: 1rem;
+  padding: $space-4;
 }
 
 .icon-and-details {
@@ -33,7 +33,7 @@
       font-weight: 700;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      // white-space: nowrap;
     }
 
     .meta {
@@ -58,6 +58,6 @@
 
 .actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: $space-2;
 }
