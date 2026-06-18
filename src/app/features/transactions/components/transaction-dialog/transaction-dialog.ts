@@ -47,8 +47,11 @@ export class TransactionDialog {
 
   parseDateTime = (isoString: string) => {
     const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return {
-      date: date.toISOString().split('T')[0],
+      date: `${year}-${month}-${day}`,
       time: date.toTimeString().slice(0, 5),
     };
   };
@@ -121,9 +124,12 @@ export class TransactionDialog {
 
   private todayIso() {
     const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
 
     return {
-      date: d.toISOString().split('T')[0],
+      date: `${year}-${month}-${day}`,
       time: d.toTimeString().slice(0, 5),
     };
   }
