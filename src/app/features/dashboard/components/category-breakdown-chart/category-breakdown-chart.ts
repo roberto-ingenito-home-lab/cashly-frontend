@@ -207,6 +207,8 @@ export class CategoryBreakdownChart {
     return {
       labels: {
         style: { colors: c.default500, fontSize: '10px' },
+        minWidth: 90,
+        maxWidth: 90,
       },
     };
   });
