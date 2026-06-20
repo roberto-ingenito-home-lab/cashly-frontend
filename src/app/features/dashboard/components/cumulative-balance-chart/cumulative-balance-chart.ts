@@ -175,6 +175,7 @@ export class CumulativeBalanceChart {
 
   tooltip = computed<ApexTooltip>(() => ({
     theme: this.themeMode(),
+    followCursor: true,
     x: {
       format: 'dd MMM yyyy',
     },

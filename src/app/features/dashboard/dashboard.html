@@ -33,6 +33,18 @@
   </app-chart-card>
 
   <app-chart-card
+    class="chart-categories"
+    title="Analisi categorie"
+    subtitle="Statistiche uscite"
+    [showNav]="false"
+  >
+    <app-category-breakdown-chart
+      [transactions]="transactions()"
+      [currency]="userCurrency()"
+    />
+  </app-chart-card>
+
+  <app-chart-card
     class="chart-daily"
     title="Andamento giornaliero"
     [subtitle]="monthSubtitle()"

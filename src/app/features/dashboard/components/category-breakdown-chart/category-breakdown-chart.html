@@ -1,0 +1,52 @@
+<div class="chart-toolbar">
+  <div class="filter-group">
+    <label for="time-filter">Filtro:</label>
+    <select id="time-filter" (change)="onFilterChange($event)">
+      <option value="current_month" [selected]="selectedFilter() === 'current_month'">Mese corrente</option>
+      <option value="current_year" [selected]="selectedFilter() === 'current_year'">Anno corrente</option>
+      <option value="last_3_months" [selected]="selectedFilter() === 'last_3_months'">Ultimi 3 mesi</option>
+      <option value="last_6_months" [selected]="selectedFilter() === 'last_6_months'">Ultimi 6 mesi</option>
+      <option value="last_year" [selected]="selectedFilter() === 'last_year'">Ultimo anno</option>
+      <option value="all" [selected]="selectedFilter() === 'all'">Tutto</option>
+    </select>
+  </div>
+
+  <button type="button" class="sort-btn" (click)="toggleSort()">
+    <app-icon [size]="18">{{ isAscending() ? 'arrow_upward' : 'arrow_downward' }}</app-icon>
+    <span>Spese: {{ isAscending() ? 'Crescente' : 'Decrescente' }}</span>
+  </button>
+</div>
+
+@if (hasData()) {
+  <div class="chart-wrapper">
+    <apx-chart
+      [chart]="chart()"
+      [series]="series()"
+      [colors]="chartColors()"
+      [plotOptions]="plotOptions"
+      [stroke]="stroke"
+      [dataLabels]="dataLabels()"
+      [legend]="legend"
+      [xaxis]="xaxis()"
+      [yaxis]="yaxis()"
+      [grid]="grid()"
+      [tooltip]="tooltip()"
+    />
+  </div>
+
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button type="button" class="btn-pagination" [disabled]="safeCurrentPage() === 0" (click)="prevPage()">
+        <app-icon [size]="18">chevron_left</app-icon>
+        <span>Precedente</span>
+      </button>
+      <span class="page-indicator">Pagina {{ safeCurrentPage() + 1 }} di {{ totalPages() }}</span>
+      <button type="button" class="btn-pagination" [disabled]="safeCurrentPage() >= totalPages() - 1" (click)="nextPage()">
+        <span>Successivo</span>
+        <app-icon [size]="18">chevron_right</app-icon>
+      </button>
+    </div>
+  }
+} @else {
+  <div class="empty">Nessuna spesa trovata per questo periodo</div>
+}

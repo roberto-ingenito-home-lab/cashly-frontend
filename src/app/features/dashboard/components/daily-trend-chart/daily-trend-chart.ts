@@ -193,6 +193,7 @@ export class DailyTrendChart {
     theme: this.themeMode(),
     shared: true,
     intersect: false,
+    followCursor: true,
     x: {
       formatter: (value: number) => `Giorno ${value}`,
     },

@@ -43,6 +43,7 @@
   }
 }
 
+.chart-categories,
 .chart-daily,
 .chart-yearly {
   @include breakpoint('lg') {

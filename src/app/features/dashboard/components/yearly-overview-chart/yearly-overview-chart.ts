@@ -138,6 +138,7 @@ export class YearlyOverviewChart {
     theme: this.themeMode(),
     shared: true,
     intersect: false,
+    followCursor: true,
     y: {
       formatter: (value: number) => this.formatCurrency(value),
     },

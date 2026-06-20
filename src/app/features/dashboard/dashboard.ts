@@ -6,6 +6,7 @@ import { ExpenseDistributionChart } from './components/expense-distribution-char
 import { CumulativeBalanceChart } from './components/cumulative-balance-chart/cumulative-balance-chart';
 import { DailyTrendChart } from './components/daily-trend-chart/daily-trend-chart';
 import { YearlyOverviewChart } from './components/yearly-overview-chart/yearly-overview-chart';
+import { CategoryBreakdownChart } from './components/category-breakdown-chart/category-breakdown-chart';
 
 const MONTH_NAMES = [
   'Gennaio',
@@ -30,6 +31,7 @@ const MONTH_NAMES = [
     CumulativeBalanceChart,
     DailyTrendChart,
     YearlyOverviewChart,
+    CategoryBreakdownChart,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
