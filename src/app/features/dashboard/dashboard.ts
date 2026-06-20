@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { TransactionsStore } from '../../core/services/transactions.store';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { DashboardStore } from '../../core/services/dashboard.store';
 import { AuthStore } from '../../core/services/auth.store';
 import { ChartCard } from './components/chart-card/chart-card';
 import { ExpenseDistributionChart } from './components/expense-distribution-chart/expense-distribution-chart';
@@ -38,10 +38,10 @@ const MONTH_NAMES = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard {
-  private transactionsStore = inject(TransactionsStore);
+  private dashboardStore = inject(DashboardStore);
   private authStore = inject(AuthStore);
 
-  transactions = computed(() => this.transactionsStore.state() ?? []);
+  summary = computed(() => this.dashboardStore.summary());
 
   userCurrency = computed(() => this.authStore.state()?.user.currency ?? 'EUR');
 
@@ -53,15 +53,16 @@ export class Dashboard {
   selectedYear = signal(this.currentYear);
   selectedMonth = signal(this.currentMonth);
 
+  constructor() {
+    effect(() => {
+      this.dashboardStore.loadSummary(this.selectedYear(), this.selectedMonth());
+    });
+  }
+
   private firstTransactionCursor = computed<{ year: number; month: number }>(() => {
-    const txs = this.transactions();
-    if (txs.length === 0) return { year: this.currentYear, month: this.currentMonth };
-    let minMs = Number.POSITIVE_INFINITY;
-    for (const t of txs) {
-      const ms = new Date(t.transactionDate).getTime();
-      if (ms < minMs) minMs = ms;
-    }
-    const d = new Date(minMs);
+    const s = this.summary();
+    if (!s || !s.firstTransactionDate) return { year: this.currentYear, month: this.currentMonth };
+    const d = new Date(s.firstTransactionDate);
     return { year: d.getFullYear(), month: d.getMonth() };
   });
 

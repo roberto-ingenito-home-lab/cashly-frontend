@@ -13,7 +13,7 @@ import {
   ApexYAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
+import { TransactionType } from '../../../../../lib/types/transaction';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 @Component({
@@ -27,27 +27,12 @@ export class DailyTrendChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
 
-  transactions = input.required<Transaction[]>();
+  dailyData = input<{ timestamp: number; incomes: number; expenses: number }[] | undefined>();
   year = input.required<number>();
   month = input.required<number>();
   currency = input.required<string>();
 
   private daysInMonth = computed(() => new Date(this.year(), this.month() + 1, 0).getDate());
-
-  private dailyExpenses = computed(() => {
-    const y = this.year();
-    const m = this.month();
-    const days = this.daysInMonth();
-    const arr = new Array<number>(days + 1).fill(0);
-    for (const t of this.transactions()) {
-      if (t.type !== TransactionType.Expense) continue;
-      const d = new Date(t.transactionDate);
-      if (d.getFullYear() === y && d.getMonth() === m) {
-        arr[d.getDate()] += t.amount;
-      }
-    }
-    return arr;
-  });
 
   private extendedExpenses = computed(() => {
     const y = this.year();
@@ -58,17 +43,28 @@ export class DailyTrendChart {
     const rangeStart = new Date(y, m, 1);
     rangeStart.setDate(rangeStart.getDate() - 6);
     const rangeStartMs = rangeStart.getTime();
-    const rangeEndMs = new Date(y, m, days, 23, 59, 59, 999).getTime();
 
-    for (const t of this.transactions()) {
-      if (t.type !== TransactionType.Expense) continue;
-      const tDate = new Date(t.transactionDate);
-      const ms = tDate.getTime();
-      if (ms < rangeStartMs || ms > rangeEndMs) continue;
+    const data = this.dailyData() ?? [];
+    for (const d of data) {
+      const ms = d.timestamp;
       const offsetDays = Math.floor((ms - rangeStartMs) / 86400000);
-      if (offsetDays >= 0 && offsetDays < buckets.length) buckets[offsetDays] += t.amount;
+      if (offsetDays >= 0 && offsetDays < buckets.length) {
+        buckets[offsetDays] += d.expenses;
+      }
     }
     return buckets;
+  });
+
+  private dailyExpenses = computed(() => {
+    const days = this.daysInMonth();
+    const extended = this.extendedExpenses();
+    // The extended expenses have 6 days of previous month at the start
+    // So day 1 of the month is at index 6. We want an array of length days+1 where index 1 is day 1.
+    const arr = new Array<number>(days + 1).fill(0);
+    for (let d = 1; d <= days; d++) {
+      arr[d] = extended[6 + (d - 1)] ?? 0;
+    }
+    return arr;
   });
 
   private movingAverage = computed<number[]>(() => {

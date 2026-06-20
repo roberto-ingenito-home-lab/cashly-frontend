@@ -18,7 +18,7 @@ import {
   ApexTooltip,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
+import { TransactionType } from '../../../../../lib/types/transaction';
 import { CategoriesStore } from '../../../../core/services/categories.store';
 
 interface Slice {
@@ -56,22 +56,12 @@ export class ExpenseDistributionChart {
   private categoriesStore = inject(CategoriesStore);
   private hostRef: ElementRef<HTMLElement> = inject(ElementRef);
 
-  transactions = input.required<Transaction[]>();
-  year = input.required<number>();
-  month = input.required<number>();
+  expenses = input<{ categoryId: number | null; amount: number }[] | undefined>();
   currency = input.required<string>();
 
   selectedKey = signal<string | null>(null);
 
-  private monthlyExpenses = computed(() => {
-    const y = this.year();
-    const m = this.month();
-    return this.transactions().filter((t) => {
-      if (t.type !== TransactionType.Expense) return false;
-      const d = new Date(t.transactionDate);
-      return d.getFullYear() === y && d.getMonth() === m;
-    });
-  });
+  private monthlyExpenses = computed(() => this.expenses() ?? []);
 
   total = computed(() => this.monthlyExpenses().reduce((sum, t) => sum + t.amount, 0));
 

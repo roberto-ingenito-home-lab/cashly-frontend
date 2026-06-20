@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal, effect } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -16,6 +16,8 @@ import { Transaction, TransactionType } from '../../../../../lib/types/transacti
 import { CategoriesStore } from '../../../../core/services/categories.store';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 import { Icon } from '../../../../shared/components/icon/icon';
+import { DashboardStore } from '../../../../core/services/dashboard.store';
+import { CategoryExpense } from '../../../../../lib/api/dashboard';
 
 type TimeRange = 'all' | 'current_year' | 'current_month' | 'last_3_months' | 'last_6_months' | 'last_year';
 
@@ -30,87 +32,39 @@ export class CategoryBreakdownChart {
   private categoriesStore = inject(CategoriesStore);
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
+  private dashboardStore = inject(DashboardStore);
 
-  transactions = input.required<Transaction[]>();
   currency = input.required<string>();
 
   selectedFilter = signal<TimeRange>('current_month');
   isAscending = signal<boolean>(false);
   currentPage = signal<number>(0);
 
-  private filterTransactions(txs: Transaction[], filter: TimeRange): Transaction[] {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
+  private categoryData = signal<CategoryExpense[]>([]);
 
-    return txs.filter((t) => {
-      // 1. Only show expenses
-      if (t.type !== TransactionType.Expense) return false;
-
-      const d = new Date(t.transactionDate);
-      const year = d.getFullYear();
-      const month = d.getMonth();
-
-      switch (filter) {
-        case 'current_month':
-          return year === currentYear && month === currentMonth;
-
-        case 'current_year':
-          return year === currentYear;
-
-        case 'last_3_months': {
-          const limit = new Date();
-          limit.setMonth(today.getMonth() - 3);
-          limit.setHours(0, 0, 0, 0);
-          return d.getTime() >= limit.getTime();
-        }
-
-        case 'last_6_months': {
-          const limit = new Date();
-          limit.setMonth(today.getMonth() - 6);
-          limit.setHours(0, 0, 0, 0);
-          return d.getTime() >= limit.getTime();
-        }
-
-        case 'last_year': {
-          const limit = new Date();
-          limit.setFullYear(today.getFullYear() - 1);
-          limit.setHours(0, 0, 0, 0);
-          return d.getTime() >= limit.getTime();
-        }
-
-        case 'all':
-        default:
-          return true;
-      }
+  constructor() {
+    effect(() => {
+      const filter = this.selectedFilter();
+      this.dashboardStore.getCategoryBreakdown(filter).then((data) => {
+        this.categoryData.set(data);
+      });
     });
   }
 
-  private filteredExpenses = computed(() => {
-    return this.filterTransactions(this.transactions(), this.selectedFilter());
-  });
-
   private categoryTotals = computed(() => {
-    const txs = this.filteredExpenses();
+    const data = this.categoryData();
     const categories = this.categoriesStore.state() ?? [];
-    const grouped = new Map<string, { name: string; amount: number }>();
-
-    for (const t of txs) {
-      const key = t.categoryId == null ? 'uncategorized' : String(t.categoryId);
-      const existing = grouped.get(key);
-      if (existing) {
-        existing.amount += t.amount;
-      } else {
-        const cat = categories.find((c) => c.categoryId === t.categoryId);
-        grouped.set(key, {
-          name: cat?.categoryName ?? 'Senza categoria',
-          amount: t.amount,
-        });
-      }
-    }
+    
+    const mapped = data.map((d) => {
+      const cat = categories.find((c) => c.categoryId === d.categoryId);
+      return {
+        name: cat?.categoryName ?? 'Senza categoria',
+        amount: d.amount,
+      };
+    });
 
     const asc = this.isAscending();
-    const sorted = [...grouped.values()].sort((a, b) => {
+    const sorted = mapped.sort((a, b) => {
       return asc ? a.amount - b.amount : b.amount - a.amount;
     });
 

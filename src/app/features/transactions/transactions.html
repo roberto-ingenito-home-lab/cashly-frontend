@@ -68,14 +68,51 @@
 </div>
 
 <main>
-  <p>{{ filteredTransactions()?.length ?? 0 }} transazioni</p>
+  <div class="pagination-container">
+    <div class="paginator-info">
+      <span>{{ totalCount() }} transazioni</span>
+    </div>
+    <div class="paginator-controls">
+      <button class="paginator-btn" [disabled]="page() === 0" (click)="goToPage(page() - 1)">
+        <app-icon>chevron_left</app-icon>
+      </button>
+      <div class="paginator-pages">
+        <span>Pagina {{ page() + 1 }} di {{ totalPages() }}</span>
+      </div>
+      <button class="paginator-btn" [disabled]="page() >= totalPages() - 1" (click)="goToPage(page() + 1)">
+        <app-icon>chevron_right</app-icon>
+      </button>
+    </div>
+  </div>
+
   <div class="transaction-list">
-    @for (item of filteredTransactions(); track item.transactionId) {
+    @for (item of transactions(); track item.transactionId) {
       @defer (on viewport) {
         <app-transaction-card [transaction]="item" />
       } @placeholder {
         <div class="transaction-placeholder"></div>
       }
+    } @empty {
+      <div class="empty-state">
+        <p>Nessuna transazione trovata.</p>
+      </div>
     }
+  </div>
+
+  <div class="pagination-container">
+    <div class="paginator-info">
+      <span>{{ totalCount() }} transazioni</span>
+    </div>
+    <div class="paginator-controls">
+      <button class="paginator-btn" [disabled]="page() === 0" (click)="goToPage(page() - 1)">
+        <app-icon>chevron_left</app-icon>
+      </button>
+      <div class="paginator-pages">
+        <span>Pagina {{ page() + 1 }} di {{ totalPages() }}</span>
+      </div>
+      <button class="paginator-btn" [disabled]="page() >= totalPages() - 1" (click)="goToPage(page() + 1)">
+        <app-icon>chevron_right</app-icon>
+      </button>
+    </div>
   </div>
 </main>

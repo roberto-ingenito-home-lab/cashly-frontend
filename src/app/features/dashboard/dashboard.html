@@ -16,9 +16,7 @@
     (forward)="goForwardMonth()"
   >
     <app-expense-distribution-chart
-      [transactions]="transactions()"
-      [year]="selectedYear()"
-      [month]="selectedMonth()"
+      [expenses]="summary()?.expenseDistribution"
       [currency]="userCurrency()"
     />
   </app-chart-card>
@@ -29,7 +27,7 @@
     subtitle="Storico totale"
     [showNav]="false"
   >
-    <app-cumulative-balance-chart [transactions]="transactions()" [currency]="userCurrency()" />
+    <app-cumulative-balance-chart [points]="summary()?.cumulativeBalance" [currency]="userCurrency()" />
   </app-chart-card>
 
   <app-chart-card
@@ -39,7 +37,6 @@
     [showNav]="false"
   >
     <app-category-breakdown-chart
-      [transactions]="transactions()"
       [currency]="userCurrency()"
     />
   </app-chart-card>
@@ -54,7 +51,7 @@
     (forward)="goForwardMonth()"
   >
     <app-daily-trend-chart
-      [transactions]="transactions()"
+      [dailyData]="summary()?.dailyTrends"
       [year]="selectedYear()"
       [month]="selectedMonth()"
       [currency]="userCurrency()"
@@ -71,7 +68,7 @@
     (forward)="goForwardYear()"
   >
     <app-yearly-overview-chart
-      [transactions]="transactions()"
+      [monthlyData]="summary()?.yearlyOverview"
       [year]="selectedYear()"
       [currency]="userCurrency()"
     />

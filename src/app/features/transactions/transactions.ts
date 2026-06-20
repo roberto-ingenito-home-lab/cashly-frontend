@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Button } from '../../shared/components/button/button';
 import { TransactionsStore } from '../../core/services/transactions.store';
 import { TransactionCard } from './components/transaction-card/transaction-card';
 import { Icon } from '../../shared/components/icon/icon';
-import { TransactionType } from '../../../lib/types/transaction';
 import { AuthStore } from '../../core/services/auth.store';
 import { FilterDialog, TransactionFilters } from './components/filter-dialog/filter-dialog';
 import {
@@ -33,43 +32,60 @@ export class Transactions {
     dateTo: null,
   });
 
+  page = signal(0);
+  pageSize = signal(20);
+
+  constructor() {
+    effect(() => {
+      const f = this.filters();
+      const p = this.page();
+      const ps = this.pageSize();
+
+      const params: Record<string, any> = {
+        page: p,
+        pageSize: ps,
+      };
+
+      if (f.type !== null) params['type'] = f.type;
+      if (f.categoryId !== null) params['categoryId'] = f.categoryId;
+      if (f.dateFrom) params['dateFrom'] = f.dateFrom;
+      if (f.dateTo) params['dateTo'] = f.dateTo;
+
+      this.transactionsStore.load(params);
+    });
+  }
+
   hasActiveFilters = computed(() => {
     const f = this.filters();
     return f.type !== null || f.categoryId !== null || f.dateFrom !== null || f.dateTo !== null;
   });
 
-  filteredTransactions = computed(() => {
-    const all = this.transactionsStore.state();
-    if (!all) return null;
-
-    const { type, categoryId, dateFrom, dateTo } = this.filters();
-
-    return all.filter((t) => {
-      if (type !== null && t.type !== type) return false;
-      if (categoryId !== null && t.categoryId !== categoryId) return false;
-      if (dateFrom && t.transactionDate < dateFrom) return false;
-      if (dateTo && t.transactionDate > dateTo + 'T23:59:59') return false;
-      return true;
-    });
-  });
+  transactions = computed(() => this.transactionsStore.state()?.transactions ?? []);
+  totalCount = computed(() => this.transactionsStore.state()?.totalCount ?? 0);
 
   statistics = computed(() => {
-    const list = this.filteredTransactions();
-
-    const income = list
-      ?.filter((t) => t.type === TransactionType.Income)
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const expense = list
-      ?.filter((t) => t.type === TransactionType.Expense)
-      .reduce((sum, t) => sum + t.amount, 0);
-
+    const s = this.transactionsStore.state();
     return {
-      income: income ?? 0,
-      expense: expense ?? 0,
-      balance: (income ?? 0) - (expense ?? 0),
+      income: s?.totalIncome ?? 0,
+      expense: s?.totalExpense ?? 0,
+      balance: s?.balance ?? 0,
     };
   });
+
+  totalPages = computed(() => {
+    const total = this.totalCount();
+    const size = this.pageSize();
+    if (total === 0) return 1;
+    return Math.ceil(total / size);
+  });
+
+  goToPage(p: number) {
+    if (p >= 0 && p < this.totalPages()) {
+      this.page.set(p);
+      // scorri verso l'alto dolcemente
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
   openFilters() {
     const ref = this.dialog.open<FilterDialog, TransactionFilters, TransactionFilters>(
@@ -82,7 +98,10 @@ export class Transactions {
     );
 
     ref.afterClosed().subscribe((result) => {
-      if (result) this.filters.set(result);
+      if (result) {
+        this.page.set(0); // Reset to first page when filtering
+        this.filters.set(result);
+      }
     });
   }
 

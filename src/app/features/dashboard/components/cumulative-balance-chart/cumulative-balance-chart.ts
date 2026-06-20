@@ -13,7 +13,7 @@ import {
   ApexYAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
+import { TransactionType } from '../../../../../lib/types/transaction';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 interface DailyPoint {
@@ -32,35 +32,15 @@ export class CumulativeBalanceChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
 
-  transactions = input.required<Transaction[]>();
+  points = input<{ x: number; y: number }[] | undefined>();
   currency = input.required<string>();
 
-  private points = computed<DailyPoint[]>(() => {
-    const txs = this.transactions();
-    if (txs.length === 0) return [];
-
-    const deltaByDay = new Map<number, number>();
-    for (const t of txs) {
-      const d = new Date(t.transactionDate);
-      const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-      const sign = t.type === TransactionType.Income ? 1 : -1;
-      deltaByDay.set(dayStart, (deltaByDay.get(dayStart) ?? 0) + sign * t.amount);
-    }
-
-    const sorted = [...deltaByDay.entries()].sort((a, b) => a[0] - b[0]);
-
-    const result: DailyPoint[] = [];
-    let running = 0;
-    for (const [ts, delta] of sorted) {
-      if (delta === 0) continue;
-      running += delta;
-      result.push({ x: ts, y: Number(running.toFixed(2)) });
-    }
-    return result;
+  private computedPoints = computed<{ x: number; y: number }[]>(() => {
+    return this.points() ?? [];
   });
 
   private range = computed(() => {
-    const pts = this.points();
+    const pts = this.computedPoints();
     if (pts.length === 0) return { min: -1, max: 1 };
     const ys = pts.map((p) => p.y);
     const min = Math.min(...ys);
@@ -71,14 +51,14 @@ export class CumulativeBalanceChart {
   });
 
   finalBalance = computed(() => {
-    const pts = this.points();
+    const pts = this.computedPoints();
     return pts[pts.length - 1]?.y ?? 0;
   });
 
   series = computed<ApexAxisChartSeries>(() => [
     {
       name: 'Saldo',
-      data: this.points(),
+      data: this.computedPoints(),
     },
   ]);
 

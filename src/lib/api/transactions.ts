@@ -1,13 +1,22 @@
 import { inject, Injectable } from '@angular/core';
-import { Transaction, TransactionCreateDto, TransactionUpdateDto } from '../types/transaction';
+import { PaginatedTransactions, Transaction, TransactionCreateDto, TransactionUpdateDto } from '../types/transaction';
 import { ApiClient } from './client';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionsApi {
   private client = inject(ApiClient);
 
-  getTransactions(): Promise<Transaction[]> {
-    return this.client.get<Transaction[]>(`/Transactions`);
+  getTransactions(params?: Record<string, any>): Promise<PaginatedTransactions> {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== null && value !== undefined) {
+          queryParams.append(key, String(value));
+        }
+      }
+    }
+    const queryString = queryParams.toString();
+    return this.client.get<PaginatedTransactions>(`/Transactions${queryString ? '?' + queryString : ''}`);
   }
 
   createTransaction(data: TransactionCreateDto): Promise<Transaction> {

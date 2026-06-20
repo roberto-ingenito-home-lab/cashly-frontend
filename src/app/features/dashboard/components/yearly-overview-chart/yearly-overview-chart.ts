@@ -12,7 +12,7 @@ import {
   ApexYAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
+import { TransactionType } from '../../../../../lib/types/transaction';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 const MONTH_LABELS = [
@@ -41,20 +41,19 @@ export class YearlyOverviewChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
 
-  transactions = input.required<Transaction[]>();
+  monthlyData = input<{ month: number; incomes: number; expenses: number }[] | undefined>();
   year = input.required<number>();
   currency = input.required<string>();
 
   private monthlyTotals = computed(() => {
-    const y = this.year();
     const income = new Array<number>(12).fill(0);
     const expense = new Array<number>(12).fill(0);
-    for (const t of this.transactions()) {
-      const d = new Date(t.transactionDate);
-      if (d.getFullYear() !== y) continue;
-      const m = d.getMonth();
-      if (t.type === TransactionType.Income) income[m] += t.amount;
-      else expense[m] += t.amount;
+    const data = this.monthlyData() ?? [];
+    for (const d of data) {
+      if (d.month >= 0 && d.month < 12) {
+        income[d.month] = d.incomes;
+        expense[d.month] = d.expenses;
+      }
     }
     return { income, expense };
   });

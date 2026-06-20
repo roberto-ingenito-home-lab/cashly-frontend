@@ -164,3 +164,81 @@ main {
     color: $primary-700;
   }
 }
+
+.pagination-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+  justify-content: center;
+  align-items: center;
+  background-color: $content1;
+  border-radius: $radius-md;
+  border: 1px solid $default-200;
+  padding: $space-3 $space-4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  @include breakpoint('md') {
+    justify-content: space-between;
+  }
+
+  .paginator-info {
+    font-size: $font-size-sm;
+    color: $default-500;
+    font-weight: 500;
+  }
+
+  .paginator-controls {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  .paginator-pages {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $foreground;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .paginator-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid $default-200;
+    color: $foreground;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      background-color: $default-100;
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: transparent;
+      background-color: $default-50;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $space-8;
+  color: $default-500;
+  background-color: $content1;
+  border-radius: $radius-md;
+  border: 1px solid $default-200;
+}
