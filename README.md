@@ -1,59 +1,63 @@
-# cashly
+# 💰 Cashly - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
+> Applicazione web frontend per la gestione delle finanze personali.
 
-## Development server
+Questo repository contiene il frontend di **Cashly**, una piattaforma per tracciare transazioni, abbonamenti e monitorare le spese tramite una dashboard interattiva.
 
-To start a local development server, run:
+## ⚙️ Tech Stack
+
+- **Framework:** Angular 21
+- **Componenti UI:** Angular Material
+- **Grafici:** ApexCharts (`ng-apexcharts`)
+- **Notifiche:** `ngx-sonner`
+- **PWA:** Supporto per Service Worker (`@angular/service-worker`)
+- **Routing:** Angular Router
+- **HTTP:** Axios proxyato verso il backend .NET
+
+## ✨ Funzionalità
+
+- 📊 **Dashboard:** Panoramica generale del bilancio con grafici interattivi.
+- 💸 **Transazioni:** Registrazione, modifica e visualizzazione di entrate e uscite.
+- 📁 **Categorie:** Organizzazione personalizzata delle transazioni.
+- 🔁 **Abbonamenti:** Tracciamento dei pagamenti ricorrenti e abbonamenti.
+- 🔐 **Autenticazione:** Sistema completo di login, registrazione e reset della password.
+
+## 🚀 Setup e Sviluppo Locale
+
+### Prerequisiti
+
+- Node.js (versione 24 raccomandata)
+- npm
+
+### Installazione ed esecuzione
+
+1. Clona il repository e installa le dipendenze:
+
+   ```bash
+   npm install
+   ```
+
+2. Avvia il server di sviluppo locale:
+   ```bash
+   npm run start
+   ```
+   L'applicazione sarà accessibile all'indirizzo `http://localhost:3000`.
+
+> **Nota sul Proxy API:** Il file `proxy.conf.json` è configurato per inoltrare tutte le richieste che iniziano con `/cashly-api` al backend in esecuzione su `http://localhost:5248`.
+
+## 📦 Build e Deployment con Docker
+
+L'applicazione include un `Dockerfile` multi-stage ottimizzato per la produzione. Compila l'app Angular tramite Node.js e la serve utilizzando Nginx.
 
 ```bash
-ng serve
+# Crea l'immagine Docker
+docker build -t cashly-frontend .
+
+# Esegui il container
+docker run -d -p 80:80 cashly-frontend
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🔗 Progetti Correlati
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Cashly Backend](https://github.com/roberto-ingenito-home-lab/cashly-backend) — API REST .NET Core
+- [Homelab Infrastructure](https://github.com/roberto-ingenito-home-lab/server-raspberry-pi) — Infrastruttura server e deployment Docker
