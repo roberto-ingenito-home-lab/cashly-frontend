@@ -35,6 +35,16 @@ export class CategoriesStore {
     this._state.set(this.state()?.filter((c) => c.categoryId !== categoryId) ?? []);
   }
 
+  async toggleHideCategory(category: Omit<Category, 'userId'>) {
+    const isHidden = !category.isHidden;
+    await this.updateCategory(category.categoryId, {
+      categoryName: category.categoryName,
+      iconName: category.iconName,
+      colorHex: category.colorHex,
+      isHidden,
+    });
+  }
+
   private sort(categories: Categories): Categories {
     return [...categories].sort((a, b) =>
       a.categoryName.toLowerCase().localeCompare(b.categoryName.toLowerCase()),

@@ -13,6 +13,13 @@
   justify-content: space-between;
 
   padding: $space-4;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+
+  &.is-hidden {
+    opacity: 0.7;
+    border-style: dashed;
+    background-color: color-mix(in srgb, $content1 92%, $default-300);
+  }
 }
 
 .icon-and-details {
@@ -29,11 +36,28 @@
     min-width: 0;
     gap: $space-1;
 
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      flex-wrap: wrap;
+    }
+
     .name {
       font-weight: 700;
       overflow: hidden;
       text-overflow: ellipsis;
-      // white-space: nowrap;
+    }
+
+    .badge-hidden {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background-color: $default-200;
+      color: $default-600;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
     .meta {

@@ -30,11 +30,16 @@ export class CategoryCard {
     });
   }
 
+  onToggleHide() {
+    this.categoriesStore.toggleHideCategory(this.category());
+  }
+
   onDelete() {
     const ref = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
       data: {
         title: 'Eliminare categoria?',
-        message: 'Questa azione non può essere annullata.',
+        message:
+          'Le transazioni associate a questa categoria non verranno eliminate, ma rimarranno senza categoria. Questa azione non può essere annullata.',
         confirmLabel: 'Elimina',
         variant: 'danger',
       },

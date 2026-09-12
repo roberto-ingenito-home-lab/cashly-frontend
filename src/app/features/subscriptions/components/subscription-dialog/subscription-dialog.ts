@@ -55,6 +55,17 @@ export class SubscriptionDialog {
   protected submitting = signal(false);
   protected error = signal<string | null>(null);
 
+  protected availableCategories = computed(() => {
+    const all = this.categoriesStore.state() ?? [];
+    const currentCategoryId = this.data.subscription?.categoryId;
+
+    if (!this.isEdit()) {
+      return all.filter((c) => !c.isHidden);
+    }
+
+    return all.filter((c) => !c.isHidden || c.categoryId === currentCategoryId);
+  });
+
   protected frequencies = [
     { value: SubscriptionFrequency.Weekly, label: 'Settimanale' },
     { value: SubscriptionFrequency.Monthly, label: 'Mensile' },

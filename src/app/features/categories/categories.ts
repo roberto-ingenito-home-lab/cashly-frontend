@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Button } from '../../shared/components/button/button';
 import { CategoriesStore } from '../../core/services/categories.store';
@@ -15,6 +15,14 @@ import { CategoryDialog, CategoryDialogData } from './components/category-dialog
 export class Categories {
   categoriesStore = inject(CategoriesStore);
   private dialog = inject(MatDialog);
+
+  visibleCategories = computed(() =>
+    (this.categoriesStore.state() ?? []).filter((c) => !c.isHidden),
+  );
+
+  hiddenCategories = computed(() =>
+    (this.categoriesStore.state() ?? []).filter((c) => !!c.isHidden),
+  );
 
   openCategoryDialog() {
     this.dialog.open<CategoryDialog, CategoryDialogData, boolean>(CategoryDialog, {

@@ -68,8 +68,8 @@
       <label for="sub-category">Categoria</label>
       <select id="sub-category" formControlName="categoryId">
         <option [ngValue]="null">Nessuna</option>
-        @for (cat of categoriesStore.state(); track cat.categoryId) {
-          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        @for (cat of availableCategories(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}{{ cat.isHidden ? ' (nascosta)' : '' }}</option>
         }
       </select>
     </div>

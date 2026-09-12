@@ -138,6 +138,7 @@ export class CategoryDialog {
       categoryName: value.categoryName.trim(),
       iconName: this.selectedIcon(),
       colorHex: this.selectedColor(),
+      isHidden: this.data.category?.isHidden ?? false,
     };
 
     try {

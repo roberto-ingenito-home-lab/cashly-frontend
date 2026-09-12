@@ -60,6 +60,16 @@ export class Transactions {
     return f.type !== null || f.categoryId !== null || f.dateFrom !== null || f.dateTo !== null;
   });
 
+  resetFilters() {
+    this.page.set(0);
+    this.filters.set({
+      type: null,
+      categoryId: null,
+      dateFrom: null,
+      dateTo: null,
+    });
+  }
+
   transactions = computed(() => this.transactionsStore.state()?.transactions ?? []);
   totalCount = computed(() => this.transactionsStore.state()?.totalCount ?? 0);
 

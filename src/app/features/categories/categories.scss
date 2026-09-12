@@ -61,3 +61,36 @@ main {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  h2 {
+    font-size: $font-size-base;
+    font-weight: 600;
+    color: $default-600;
+  }
+
+  .count {
+    color: $default-500;
+    font-size: $font-size-sm;
+  }
+}
+
+.hidden-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-top: $space-6;
+  padding-top: $space-6;
+  border-top: 1px solid $default-200;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: $space-6;
+  text-align: center;
+  color: $default-400;
+}

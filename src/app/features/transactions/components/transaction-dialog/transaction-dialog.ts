@@ -45,6 +45,17 @@ export class TransactionDialog {
   protected submitting = signal(false);
   protected error = signal<string | null>(null);
 
+  protected availableCategories = computed(() => {
+    const all = this.categoriesStore.state() ?? [];
+    const currentCategoryId = this.data.transaction?.categoryId;
+
+    if (!this.isEdit()) {
+      return all.filter((c) => !c.isHidden);
+    }
+
+    return all.filter((c) => !c.isHidden || c.categoryId === currentCategoryId);
+  });
+
   parseDateTime = (isoString: string) => {
     const date = new Date(isoString);
     const year = date.getFullYear();

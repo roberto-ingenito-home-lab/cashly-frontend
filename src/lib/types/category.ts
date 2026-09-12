@@ -3,6 +3,7 @@ export interface Category {
   categoryName: string;
   iconName?: string;
   colorHex?: string;
+  isHidden?: boolean;
   userId: number;
 }
 

@@ -53,9 +53,14 @@ export class FilterDialog {
 
   protected apply() {
     const value = this.form.getRawValue();
+    const parsedCategoryId =
+      value.categoryId !== null && value.categoryId !== undefined
+        ? Number(value.categoryId)
+        : null;
+
     this.dialogRef.close({
-      type: value.type ?? null,
-      categoryId: value.categoryId !== null ? Number(value.categoryId) : null,
+      type: value.type || null,
+      categoryId: parsedCategoryId !== null && !isNaN(parsedCategoryId) ? parsedCategoryId : null,
       dateFrom: value.dateFrom || null,
       dateTo: value.dateTo || null,
     });

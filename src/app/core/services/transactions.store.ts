@@ -15,8 +15,8 @@ export class TransactionsStore {
 
   state = this._state.asReadonly();
 
-  async load(params: Record<string, any>) {
-    this.currentParams = { ...this.currentParams, ...params };
+  async load(params: Record<string, any> = {}) {
+    this.currentParams = { page: 0, pageSize: 20, ...params };
     const data = await this.api.getTransactions(this.currentParams);
     this._state.set(data);
   }
@@ -25,7 +25,10 @@ export class TransactionsStore {
     await this.load(this.currentParams);
   }
 
-  reset = () => this._state.set(null);
+  reset = () => {
+    this.currentParams = { page: 0, pageSize: 20 };
+    this._state.set(null);
+  };
 
   async deleteTransaction(id: number) {
     await this.api.deleteTransaction(id);

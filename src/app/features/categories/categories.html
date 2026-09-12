@@ -12,10 +12,32 @@
 </header>
 
 <main>
-  <p>{{ categoriesStore.state()?.length ?? 0 }} categorie</p>
+  <div class="section-header">
+    <p class="count">{{ visibleCategories().length }} categorie</p>
+  </div>
+
   <div class="category-list">
-    @for (item of categoriesStore.state(); track item.categoryId) {
+    @for (item of visibleCategories(); track item.categoryId) {
       <app-category-card [category]="item" />
+    } @empty {
+      <div class="empty-state">
+        <p>Nessuna categoria attiva.</p>
+      </div>
     }
   </div>
+
+  @if (hiddenCategories().length > 0) {
+    <div class="hidden-section">
+      <div class="section-header">
+        <h2>Categorie nascoste</h2>
+        <span class="count">{{ hiddenCategories().length }}</span>
+      </div>
+
+      <div class="category-list">
+        @for (item of hiddenCategories(); track item.categoryId) {
+          <app-category-card [category]="item" />
+        }
+      </div>
+    </div>
+  }
 </main>

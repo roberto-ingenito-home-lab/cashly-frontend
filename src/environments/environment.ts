@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: '/cashly-api',
+  apiUrl: 'https://cashly.robertoingenito.com/cashly-api',
 };
