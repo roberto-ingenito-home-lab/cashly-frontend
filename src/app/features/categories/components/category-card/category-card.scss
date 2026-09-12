@@ -36,28 +36,10 @@
     min-width: 0;
     gap: $space-1;
 
-    .name-row {
-      display: flex;
-      align-items: center;
-      gap: $space-2;
-      flex-wrap: wrap;
-    }
-
     .name {
       font-weight: 700;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .badge-hidden {
-      font-size: 0.7rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background-color: $default-200;
-      color: $default-600;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
     }
 
     .meta {

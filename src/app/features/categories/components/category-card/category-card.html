@@ -8,12 +8,7 @@
       <app-icon [weight]="600">{{ category().iconName || 'local_offer' }}</app-icon>
     </div>
     <div class="details">
-      <div class="name-row">
-        <p class="name">{{ category().categoryName }}</p>
-        @if (category().isHidden) {
-          <span class="badge-hidden">Nascosta</span>
-        }
-      </div>
+      <p class="name">{{ category().categoryName }}</p>
     </div>
   </div>
 

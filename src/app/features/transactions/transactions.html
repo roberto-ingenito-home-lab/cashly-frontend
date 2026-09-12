@@ -5,15 +5,15 @@
   </div>
 
   <div class="actions">
-    <app-button variant="secondary" icon="filter_alt" (clicked)="openFilters()">
+    <app-button class="filter-btn" variant="secondary" icon="filter_alt" (clicked)="openFilters()">
       Filtri{{ hasActiveFilters() ? ' •' : '' }}
     </app-button>
     @if (hasActiveFilters()) {
-      <app-button variant="outlined" icon="close" (clicked)="resetFilters()">
+      <app-button class="reset-filters-btn" variant="outlined" icon="close" (clicked)="resetFilters()">
         Rimuovi filtri
       </app-button>
     }
-    <app-button variant="primary" icon="add_2" (clicked)="openTransactionDialog()">
+    <app-button class="new-tx-btn" variant="primary" icon="add_2" (clicked)="openTransactionDialog()">
       Nuova transazione
     </app-button>
   </div>

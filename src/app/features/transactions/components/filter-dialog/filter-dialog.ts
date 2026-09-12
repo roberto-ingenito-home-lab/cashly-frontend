@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -39,6 +39,20 @@ export class FilterDialog {
 
   protected readonly TransactionType = TransactionType;
   protected categoriesStore = inject(CategoriesStore);
+
+  protected visibleCategories = computed(() => {
+    const all = this.categoriesStore.state() ?? [];
+    return all
+      .filter((c) => !c.isHidden)
+      .sort((a, b) => a.categoryName.localeCompare(b.categoryName, 'it', { sensitivity: 'base' }));
+  });
+
+  protected hiddenCategories = computed(() => {
+    const all = this.categoriesStore.state() ?? [];
+    return all
+      .filter((c) => !!c.isHidden)
+      .sort((a, b) => a.categoryName.localeCompare(b.categoryName, 'it', { sensitivity: 'base' }));
+  });
 
   protected form = new FormGroup({
     type: new FormControl<TransactionType | null>(this.data.type),

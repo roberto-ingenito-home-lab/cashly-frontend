@@ -51,11 +51,24 @@ header {
       width: auto;
     }
 
-    & > *:nth-child(1) {
+    .filter-btn {
       flex: 1;
+
+      @include breakpoint('md') {
+        flex: initial;
+      }
     }
 
-    & > *:nth-child(2) {
+    .reset-filters-btn {
+      display: none;
+
+      @include breakpoint('md') {
+        display: block;
+        flex: initial;
+      }
+    }
+
+    .new-tx-btn {
       flex: 2;
 
       @include breakpoint('md') {

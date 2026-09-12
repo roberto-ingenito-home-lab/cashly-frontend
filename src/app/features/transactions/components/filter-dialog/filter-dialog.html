@@ -15,8 +15,19 @@
       <label for="filter-category">Categoria</label>
       <select id="filter-category" formControlName="categoryId">
         <option [ngValue]="null">Tutte</option>
-        @for (cat of categoriesStore.state(); track cat.categoryId) {
-          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}{{ cat.isHidden ? ' (nascosta)' : '' }}</option>
+        @if (visibleCategories().length > 0) {
+          <optgroup label="Categorie attive">
+            @for (cat of visibleCategories(); track cat.categoryId) {
+              <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+            }
+          </optgroup>
+        }
+        @if (hiddenCategories().length > 0) {
+          <optgroup label="Categorie nascoste">
+            @for (cat of hiddenCategories(); track cat.categoryId) {
+              <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+            }
+          </optgroup>
         }
       </select>
     </div>
