@@ -26,17 +26,86 @@ export class Subscriptions {
 
   userCurrency = computed(() => this.authStore.state()?.user.currency ?? 'EUR');
 
-  subscriptions = computed(() => this.subscriptionsStore.state() ?? []);
+  private readonly frequencyOrder: Record<SubscriptionFrequency, number> = {
+    [SubscriptionFrequency.Weekly]: 1,
+    [SubscriptionFrequency.Monthly]: 2,
+    [SubscriptionFrequency.Bimonthly]: 3,
+    [SubscriptionFrequency.Quarterly]: 4,
+    [SubscriptionFrequency.SemiAnnually]: 5,
+    [SubscriptionFrequency.Annually]: 6,
+  };
 
-  // Compute monthly total for expenses
+  subscriptions = computed(() => {
+    const list = this.subscriptionsStore.state() ?? [];
+    return [...list].sort((a, b) => {
+      const orderA = this.frequencyOrder[a.frequency] ?? 99;
+      const orderB = this.frequencyOrder[b.frequency] ?? 99;
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return a.name.localeCompare(b.name, 'it', { sensitivity: 'base' });
+    });
+  });
+
+  isSubscriptionActive(s: Subscription): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (s.startDate) {
+      const start = new Date(s.startDate);
+      start.setHours(0, 0, 0, 0);
+      if (start > today) {
+        return false;
+      }
+    }
+
+    if (s.endDate) {
+      const end = new Date(s.endDate);
+      end.setHours(23, 59, 59, 999);
+      if (end < today) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  getSubscriptionStatus(s: Subscription): 'active' | 'future' | 'ended' {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (s.startDate) {
+      const start = new Date(s.startDate);
+      start.setHours(0, 0, 0, 0);
+      if (start > today) {
+        return 'future';
+      }
+    }
+
+    if (s.endDate) {
+      const end = new Date(s.endDate);
+      end.setHours(23, 59, 59, 999);
+      if (end < today) {
+        return 'ended';
+      }
+    }
+
+    return 'active';
+  }
+
+  // Compute monthly total for active expenses only
   monthlyExpenses = computed(() => {
-    const list = this.subscriptions().filter((s) => s.type === TransactionType.Expense);
+    const list = this.subscriptions().filter(
+      (s) => s.type === TransactionType.Expense && this.isSubscriptionActive(s)
+    );
     return list.reduce((sum, s) => sum + this.getMonthlyEquivalent(s.amount, s.frequency), 0);
   });
 
-  // Compute monthly total for incomes
+  // Compute monthly total for active incomes only
   monthlyIncomes = computed(() => {
-    const list = this.subscriptions().filter((s) => s.type === TransactionType.Income);
+    const list = this.subscriptions().filter(
+      (s) => s.type === TransactionType.Income && this.isSubscriptionActive(s)
+    );
     return list.reduce((sum, s) => sum + this.getMonthlyEquivalent(s.amount, s.frequency), 0);
   });
 

@@ -60,9 +60,13 @@
     </div>
 
     <div class="field-row">
-      <app-input label="Data Inizio" type="date" formControlName="startDate" />
-      <app-input label="Data Fine (Opzionale)" type="date" formControlName="endDate" />
+      <app-input label="Data Inizio" type="date" formControlName="startDate" [hasError]="!!(form.hasError('dateRangeInvalid') && (form.get('startDate')?.touched || form.get('endDate')?.touched))" />
+      <app-input label="Data Fine (Opzionale)" type="date" formControlName="endDate" [hasError]="!!(form.hasError('dateRangeInvalid') && (form.get('startDate')?.touched || form.get('endDate')?.touched))" />
     </div>
+
+    @if (form.hasError('dateRangeInvalid') && (form.get('startDate')?.touched || form.get('endDate')?.touched)) {
+      <p class="error-text" role="alert">La data di inizio non può essere successiva alla data di fine.</p>
+    }
 
     <div class="field">
       <label for="sub-category">Categoria</label>

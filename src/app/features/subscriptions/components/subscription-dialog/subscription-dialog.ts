@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -17,6 +17,19 @@ import { Input } from '../../../../shared/components/input/input';
 export interface SubscriptionDialogData {
   subscription?: Subscription;
 }
+
+const dateRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const startDate = control.get('startDate')?.value;
+  const endDate = control.get('endDate')?.value;
+
+  if (startDate && endDate) {
+    if (new Date(startDate) > new Date(endDate)) {
+      return { dateRangeInvalid: true };
+    }
+  }
+
+  return null;
+};
 
 function formatLocalDate(isoString: string | null | undefined): string {
   if (!isoString) return '';
@@ -100,6 +113,10 @@ export class SubscriptionDialog {
       { nonNullable: true },
     ),
     categoryId: new FormControl<number | null>(this.data.subscription?.categoryId ?? null),
+  }, { validators: [dateRangeValidator] });
+
+  protected isDateRangeInvalid = computed(() => {
+    return this.form.errors?.['dateRangeInvalid'] && (this.form.get('startDate')?.touched || this.form.get('endDate')?.touched);
   });
 
   protected cancel() {

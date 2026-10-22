@@ -172,6 +172,14 @@ main {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
+  &--inactive {
+    opacity: 0.72;
+
+    &:hover {
+      opacity: 0.95;
+    }
+  }
+
   // --- MOBILE LAYOUT ---
   .mobile-row-group {
     display: flex;
@@ -244,6 +252,20 @@ main {
     .frequency-tag {
       color: $primary-600;
       background-color: $primary-100;
+    }
+
+    .status-tag {
+      &--ended {
+        color: $danger-700;
+        background-color: $danger-100;
+        border: 1px solid rgba($danger-400, 0.4);
+      }
+
+      &--future {
+        color: $warning-700;
+        background-color: $warning-100;
+        border: 1px solid rgba($warning-400, 0.4);
+      }
     }
   }
 

@@ -61,7 +61,7 @@
   } @else {
     <div class="subscription-list">
       @for (item of subscriptions(); track item.subscriptionId) {
-        <div class="subscription-card">
+        <div class="subscription-card" [class.subscription-card--inactive]="!isSubscriptionActive(item)">
           
           <!-- Raggruppamento per la riga principale su mobile -->
           <div class="mobile-row-group">
@@ -76,17 +76,31 @@
               <p class="name">{{ item.name }}</p>
               
               <div class="meta-row">
+                <div class="meta-item frequency-tag">
+                  <app-icon [size]="14">repeat</app-icon>
+                  <span>{{ getFrequencyLabel(item.frequency) }}</span>
+                </div>
+
                 @if (getCategory(item.categoryId); as c) {
                   <div class="meta-item category-tag" [style.color]="c.colorHex" [style.backgroundColor]="c.colorHex + '15'">
                     <app-icon [size]="14">{{ c.iconName ?? 'local_offer' }}</app-icon>
                     <span>{{ c.categoryName }}</span>
                   </div>
                 }
-                
-                <div class="meta-item frequency-tag">
-                  <app-icon [size]="14">repeat</app-icon>
-                  <span>{{ getFrequencyLabel(item.frequency) }}</span>
-                </div>
+
+                @if (getSubscriptionStatus(item); as status) {
+                  @if (status === 'ended') {
+                    <div class="meta-item status-tag status-tag--ended">
+                      <app-icon [size]="14">event_busy</app-icon>
+                      <span>Concluso</span>
+                    </div>
+                  } @else if (status === 'future') {
+                    <div class="meta-item status-tag status-tag--future">
+                      <app-icon [size]="14">schedule</app-icon>
+                      <span>Inizierà in futuro</span>
+                    </div>
+                  }
+                }
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 {
   "/cashly-api": {
-    "target": "http://localhost:5248",
+    "target": "https://cashly.robertoingenito.com",
     "secure": false,
     "changeOrigin": true
   }
