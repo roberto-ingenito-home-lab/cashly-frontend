@@ -78,6 +78,7 @@ export class Transactions {
     return {
       income: s?.totalIncome ?? 0,
       expense: s?.totalExpense ?? 0,
+      transfers: s?.totalTransfers ?? 0,
       balance: s?.balance ?? 0,
     };
   });

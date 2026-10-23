@@ -198,13 +198,26 @@ export class Investments implements OnInit {
     );
   }
 
-  async deleteLog(log: InvestmentLog) {
-    try {
-      await this.store.deleteLog(log.id, log.accountId);
-      toast.success('Movimento rimosso e tutti i saldi sono stati ricalcolati.');
-    } catch {
-      toast.error('Errore rimozione voce.');
-    }
+  deleteLog(log: InvestmentLog) {
+    const ref = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+      data: {
+        title: 'Eliminare movimento?',
+        message: "Questa operazione ricalcolera i saldi ed eliminera l'eventuale transazione collegata.",
+        confirmLabel: 'Elimina',
+        variant: 'danger',
+      },
+    });
+
+    ref.afterClosed().subscribe(async (confirmed) => {
+      if (confirmed) {
+        try {
+          await this.store.deleteLog(log.id, log.accountId);
+          toast.success('Movimento rimosso e tutti i saldi sono stati ricalcolati.');
+        } catch {
+          toast.error('Errore rimozione voce.');
+        }
+      }
+    });
   }
 
   onDeleteAccount(acc: InvestmentAccount) {

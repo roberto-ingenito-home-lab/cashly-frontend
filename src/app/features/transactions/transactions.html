@@ -54,15 +54,34 @@
     </div>
   </div>
 
+  <div class="transfer-card">
+    <div class="card-details">
+      <p>Trasferimenti</p>
+      <p>
+        {{
+          (statistics().transfers > 0 ? '+' : '') +
+            statistics().transfers.toLocaleString('it-IT', {
+              style: 'currency',
+              currency: userCurrency(),
+            })
+        }}
+      </p>
+    </div>
+    <div class="statistic-icon statistic-icon--transfer">
+      <app-icon [weight]="600">swap_horiz</app-icon>
+    </div>
+  </div>
+
   <div class="balance-card">
     <div class="card-details">
       <p>Bilancio</p>
       <p>
         {{
-          statistics().balance.toLocaleString('it-IT', {
-            style: 'currency',
-            currency: userCurrency(),
-          })
+          (statistics().balance > 0 ? '+' : '') +
+            statistics().balance.toLocaleString('it-IT', {
+              style: 'currency',
+              currency: userCurrency(),
+            })
         }}
       </p>
     </div>

@@ -35,6 +35,10 @@ export class TransactionCard {
   );
 
   isIncome = computed(() => this.transaction().type === TransactionType.Income);
+  isTransferIn = computed(() => this.transaction().type === TransactionType.TransferIn);
+  isTransferOut = computed(() => this.transaction().type === TransactionType.TransferOut);
+  isTransfer = computed(() => this.isTransferIn() || this.isTransferOut());
+  isPositive = computed(() => this.isIncome() || this.isTransferIn());
 
   formatDate(dateString: string) {
     const date = new Date(dateString);

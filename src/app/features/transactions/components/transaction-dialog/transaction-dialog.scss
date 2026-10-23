@@ -48,6 +48,12 @@
       border-color: $success-400;
       color: $success-600;
     }
+
+    &.active.type-option--transfer {
+      background-color: $primary-100;
+      border-color: $primary-400;
+      color: $primary-700;
+    }
   }
 }
 
