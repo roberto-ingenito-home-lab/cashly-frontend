@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>Registra Movimento su {{ data.account.name }}</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">Segna un versamento (es. bonifico / PAC), un prelievo o l'interesse accreditato nel mese.</p>
+
+  <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
+    <div class="mode-switch" role="radiogroup" aria-label="Tipo movimento">
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="selectedType() === InvestmentLogType.DEPOSIT"
+        [class.active--buy]="selectedType() === InvestmentLogType.DEPOSIT"
+        (click)="setType(InvestmentLogType.DEPOSIT)"
+      >
+        Versamento
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="selectedType() === InvestmentLogType.WITHDRAWAL"
+        [class.active--sell]="selectedType() === InvestmentLogType.WITHDRAWAL"
+        (click)="setType(InvestmentLogType.WITHDRAWAL)"
+      >
+        Prelievo
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="selectedType() === InvestmentLogType.INTEREST"
+        [class.active--dividend]="selectedType() === InvestmentLogType.INTEREST"
+        (click)="setType(InvestmentLogType.INTEREST)"
+      >
+        Interesse
+      </button>
+    </div>
+
+    <div class="field-row">
+      <app-input
+        [label]="amountLabel()"
+        type="number"
+        placeholder="0.00"
+        formControlName="amount"
+        [hasError]="form.controls.amount.touched && form.controls.amount.invalid"
+      >
+        @if (form.controls.amount.touched && form.controls.amount.invalid) {
+          Inserisci un importo valido.
+        }
+      </app-input>
+      <app-input label="Data" type="date" formControlName="logDate" />
+    </div>
+
+    <app-input
+      label="Nota (Opzionale)"
+      [placeholder]="selectedType() === InvestmentLogType.INTEREST ? 'es. Interessi mensili accreditati' : 'es. Bonifico / Rata PAC / Acquisto azioni'"
+      formControlName="note"
+    />
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ submitting() ? 'Salvataggio...' : 'Registra' }}
+  </app-button>
+</mat-dialog-actions>

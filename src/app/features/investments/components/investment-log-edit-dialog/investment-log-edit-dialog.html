@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Modifica Movimento ({{ data.account.name }})</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">
+    Modifica tipo, importo, data o nota: tutti i saldi del conto verranno ricalcolati in automatico.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="log-action-type">Tipo di Operazione</label>
+      <select id="log-action-type" formControlName="actionType">
+        <option [ngValue]="0">Versamento (Soldi trasferiti nel conto)</option>
+        <option [ngValue]="1">Prelievo (Soldi riportati su C/C)</option>
+        <option [ngValue]="2">Interesse Accreditato</option>
+        <option [ngValue]="3">Valore Attuale Segnato (Snapshot saldo)</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <app-input
+        [label]="form.controls.actionType.value === 3 ? 'Valore Attuale (€)' : 'Importo (€)'"
+        type="number"
+        placeholder="0.00"
+        formControlName="amount"
+        [hasError]="form.controls.amount.touched && form.controls.amount.invalid"
+      >
+        @if (form.controls.amount.touched && form.controls.amount.invalid) {
+          Inserisci un importo valido.
+        }
+      </app-input>
+      <app-input label="Data" type="date" formControlName="logDate" />
+    </div>
+
+    <app-input label="Nota" placeholder="Causale o nota del movimento" formControlName="note" />
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ submitting() ? 'Salvataggio...' : 'Salva Modifiche' }}
+  </app-button>
+</mat-dialog-actions>

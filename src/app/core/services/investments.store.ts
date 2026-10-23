@@ -69,6 +69,11 @@ export class InvestmentsStore {
     await this.load();
   }
 
+  async updateAccount(id: number, name: string): Promise<void> {
+    await this.api.updateAccount(id, { name });
+    await this.load();
+  }
+
   async recordOperation(dto: InvestmentCashOperationDto): Promise<void> {
     await this.api.recordOperation(dto);
     await this.load();

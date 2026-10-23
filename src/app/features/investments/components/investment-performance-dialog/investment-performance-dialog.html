@@ -1,0 +1,70 @@
+<h2 mat-dialog-title class="dialog-header">
+  <div class="header-left">
+    <div
+      class="icon-badge"
+      [style.backgroundColor]="data.account.colorHex + '22'"
+      [style.color]="data.account.colorHex"
+    >
+      <app-icon [weight]="600">{{ data.account.iconName || 'trending_up' }}</app-icon>
+    </div>
+    <div class="header-titles">
+      <span class="account-name">{{ data.account.name }}</span>
+      <span class="sub-label">Andamento e Rendimento</span>
+    </div>
+  </div>
+</h2>
+
+<mat-dialog-content>
+  <div class="stats-overview">
+    <div class="stat-card">
+      <span class="stat-label">Soldi Trasferiti (Netti)</span>
+      <span class="stat-value">{{ formatCurrency(data.account.totalTransferred) }}</span>
+      <span class="stat-hint">Capitale versato al netto dei prelievi</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Valore Attuale</span>
+      <span class="stat-value">{{ formatCurrency(data.account.totalCurrentValue) }}</span>
+      <span class="stat-hint">Ultimo valore di mercato segnato</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Interessi Accreditati</span>
+      <span class="stat-value" [class.stat-value--positive]="data.account.totalInterestCredited > 0">
+        {{ (data.account.totalInterestCredited > 0 ? '+' : '') + formatCurrency(data.account.totalInterestCredited) }}
+      </span>
+      <span class="stat-hint">Interessi o dividendi liquidati</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Profitto / Perdita non Realizzato</span>
+      <span
+        class="stat-value"
+        [class.stat-value--positive]="data.account.unrealizedMarketProfitLoss >= 0"
+        [class.stat-value--negative]="data.account.unrealizedMarketProfitLoss < 0"
+      >
+        {{ (data.account.unrealizedMarketProfitLoss >= 0 ? '+' : '') + formatCurrency(data.account.unrealizedMarketProfitLoss) }}
+      </span>
+      <span class="stat-hint">Oscillazione di mercato ancora aperta (sulla carta)</span>
+    </div>
+
+    <div class="stat-card stat-card--highlight">
+      <span class="stat-label">Rendimento Totale Complessivo</span>
+      <span
+        class="stat-value"
+        [class.stat-value--positive]="data.account.profitLoss >= 0"
+        [class.stat-value--negative]="data.account.profitLoss < 0"
+      >
+        {{ (data.account.profitLoss >= 0 ? '+' : '') + formatCurrency(data.account.profitLoss) }}
+        ({{ (data.account.returnPercentage >= 0 ? '+' : '') + (data.account.returnPercentage | number:'1.2-2') }}%)
+      </span>
+      <span class="stat-hint">Interessi accreditati + profitto/perdita non realizzato</span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="close()">
+    Chiudi
+  </app-button>
+</mat-dialog-actions>

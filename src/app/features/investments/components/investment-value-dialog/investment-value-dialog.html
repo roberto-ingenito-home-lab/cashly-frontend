@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Segna Valore Attuale: {{ data.account.name }}</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">
+    Inserisci quanto vale oggi in totale il conto su {{ data.account.name }} per calcolare il profitto o la perdita non realizzata.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
+    <div class="field-row">
+      <app-input
+        label="Valore Attuale Complessivo (€)"
+        type="number"
+        placeholder="0.00"
+        formControlName="currentValue"
+        [hasError]="form.controls.currentValue.touched && form.controls.currentValue.invalid"
+      >
+        @if (form.controls.currentValue.touched && form.controls.currentValue.invalid) {
+          Inserisci un valore valido.
+        }
+      </app-input>
+      <app-input label="Data Rilevazione" type="date" formControlName="logDate" />
+    </div>
+
+    <app-input
+      label="Nota (Opzionale)"
+      placeholder="es. Aggiornamento periodico saldo conto"
+      formControlName="note"
+    />
+
+    <div class="helper-box">
+      Soldi trasferiti finora: <strong>{{ data.account.totalTransferred | number:'1.2-2' }} €</strong>
+    </div>
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ submitting() ? 'Salvataggio...' : 'Salva Valore Attuale' }}
+  </app-button>
+</mat-dialog-actions>

@@ -6,6 +6,10 @@
 
     input {
         @include input-base;
+        height: 2.75rem;
+        box-sizing: border-box;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 }
 

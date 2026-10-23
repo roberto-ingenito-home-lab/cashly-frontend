@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Modifica Conto</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
+    <app-input
+      label="Nome Conto / Broker"
+      placeholder="es. Scalable Capital / Directa SIM"
+      formControlName="name"
+      [hasError]="form.controls.name.touched && form.controls.name.invalid"
+    >
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        Inserisci un nome valido per il conto.
+      }
+    </app-input>
+
+    @if (error(); as err) {
+      <p class="error-text" role="alert">{{ err }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="cancel()" [disabled]="submitting()">
+    Annulla
+  </app-button>
+  <app-button variant="primary" (clicked)="submit()" [disabled]="submitting()">
+    {{ submitting() ? 'Salvataggio...' : 'Salva' }}
+  </app-button>
+</mat-dialog-actions>

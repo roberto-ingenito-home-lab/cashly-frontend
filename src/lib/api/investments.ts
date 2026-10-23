@@ -28,6 +28,10 @@ export class InvestmentsApi {
     return this.client.post<InvestmentAccount>('/Investments/accounts', dto);
   }
 
+  updateAccount(id: number, dto: { name: string }): Promise<InvestmentAccount> {
+    return this.client.put<InvestmentAccount>(`/Investments/accounts/${id}`, dto);
+  }
+
   recordOperation(dto: InvestmentCashOperationDto): Promise<InvestmentAccount> {
     return this.client.post<InvestmentAccount>('/Investments/operations', dto);
   }

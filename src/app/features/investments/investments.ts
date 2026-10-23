@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { InvestmentsStore } from '../../core/services/investments.store';
 import {
@@ -13,11 +12,34 @@ import { AuthStore } from '../../core/services/auth.store';
 import { Button } from '../../shared/components/button/button';
 import { Icon } from '../../shared/components/icon/icon';
 import { ConfirmDialog, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  InvestmentAccountDialog,
+} from './components/investment-account-dialog/investment-account-dialog';
+import {
+  InvestmentAccountEditDialog,
+  InvestmentAccountEditDialogData,
+} from './components/investment-account-edit-dialog/investment-account-edit-dialog';
+import {
+  InvestmentPerformanceDialog,
+  InvestmentPerformanceDialogData,
+} from './components/investment-performance-dialog/investment-performance-dialog';
+import {
+  InvestmentOperationDialog,
+  InvestmentOperationDialogData,
+} from './components/investment-operation-dialog/investment-operation-dialog';
+import {
+  InvestmentValueDialog,
+  InvestmentValueDialogData,
+} from './components/investment-value-dialog/investment-value-dialog';
+import {
+  InvestmentLogEditDialog,
+  InvestmentLogEditDialogData,
+} from './components/investment-log-edit-dialog/investment-log-edit-dialog';
 import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-investments',
-  imports: [FormsModule, DecimalPipe, Button, Icon],
+  imports: [DecimalPipe, Button, Icon],
   templateUrl: './investments.html',
   styleUrl: './investments.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,41 +53,6 @@ export class Investments implements OnInit {
 
   userCurrency = computed(() => this.authStore.state()?.user.currency || 'EUR');
   expandedIds = signal<Set<number>>(new Set());
-
-  accountModalOpen = signal(false);
-  accountForm = {
-    name: '',
-    initialDeposit: 1000,
-    initialCurrentValue: 1000 as number | null,
-    colorHex: '#4a7063',
-    iconName: 'account_balance',
-  };
-
-  selectedAccount = signal<InvestmentAccount | null>(null);
-
-  operationModalOpen = signal(false);
-  operationForm = {
-    operationType: InvestmentLogType.DEPOSIT,
-    amount: 1000,
-    logDate: new Date().toISOString().slice(0, 10),
-    note: '',
-  };
-
-  valueModalOpen = signal(false);
-  valueForm = {
-    currentValue: 0,
-    logDate: new Date().toISOString().slice(0, 10),
-    note: '',
-  };
-
-  editLogModalOpen = signal(false);
-  editingLog = signal<InvestmentLog | null>(null);
-  editLogForm = {
-    actionType: InvestmentLogType.DEPOSIT,
-    amount: 0,
-    logDate: new Date().toISOString().slice(0, 10),
-    note: '',
-  };
 
   totalTransferred = computed(() =>
     this.store.accounts().reduce((sum, a) => sum + a.totalTransferred, 0),
@@ -150,147 +137,65 @@ export class Investments implements OnInit {
   }
 
   openAccountModal() {
-    this.accountForm = {
-      name: '',
-      initialDeposit: 1000,
-      initialCurrentValue: 1000,
-      colorHex: '#4a7063',
-      iconName: 'account_balance',
-    };
-    this.accountModalOpen.set(true);
+    this.dialog.open(InvestmentAccountDialog, {
+      width: '500px',
+      maxWidth: '95vw',
+    });
+  }
+
+  openEditAccountModal(acc: InvestmentAccount) {
+    this.dialog.open<InvestmentAccountEditDialog, InvestmentAccountEditDialogData, boolean>(
+      InvestmentAccountEditDialog,
+      {
+        data: { account: acc },
+        width: '450px',
+        maxWidth: '95vw',
+      },
+    );
+  }
+
+  openPerformanceModal(acc: InvestmentAccount) {
+    this.dialog.open<InvestmentPerformanceDialog, InvestmentPerformanceDialogData>(
+      InvestmentPerformanceDialog,
+      {
+        data: { account: acc },
+        width: '480px',
+        maxWidth: '95vw',
+      },
+    );
   }
 
   openOperationModal(acc: InvestmentAccount, type: InvestmentLogType) {
-    this.selectedAccount.set(acc);
-    this.operationForm = {
-      operationType: type,
-      amount: type === InvestmentLogType.INTEREST ? 25 : 1000,
-      logDate: new Date().toISOString().slice(0, 10),
-      note: '',
-    };
-    this.operationModalOpen.set(true);
+    this.dialog.open<InvestmentOperationDialog, InvestmentOperationDialogData, boolean>(
+      InvestmentOperationDialog,
+      {
+        data: { account: acc, initialType: type },
+        width: '500px',
+        maxWidth: '95vw',
+      },
+    );
   }
 
   openValueModal(acc: InvestmentAccount) {
-    this.selectedAccount.set(acc);
-    this.valueForm = {
-      currentValue: acc.totalCurrentValue,
-      logDate: new Date().toISOString().slice(0, 10),
-      note: '',
-    };
-    this.valueModalOpen.set(true);
+    this.dialog.open<InvestmentValueDialog, InvestmentValueDialogData, boolean>(
+      InvestmentValueDialog,
+      {
+        data: { account: acc },
+        width: '500px',
+        maxWidth: '95vw',
+      },
+    );
   }
 
   openEditLogModal(acc: InvestmentAccount, log: InvestmentLog) {
-    this.selectedAccount.set(acc);
-    this.editingLog.set(log);
-    const dateFormatted = log.logDate
-      ? new Date(log.logDate).toISOString().slice(0, 10)
-      : new Date().toISOString().slice(0, 10);
-
-    this.editLogForm = {
-      actionType: log.actionType,
-      amount: log.amount,
-      logDate: dateFormatted,
-      note: log.note || '',
-    };
-    this.editLogModalOpen.set(true);
-  }
-
-  closeModals() {
-    this.accountModalOpen.set(false);
-    this.operationModalOpen.set(false);
-    this.valueModalOpen.set(false);
-    this.editLogModalOpen.set(false);
-    this.editingLog.set(null);
-  }
-
-  async saveAccount() {
-    if (!this.accountForm.name.trim()) {
-      toast.error('Inserisci il nome del conto.');
-      return;
-    }
-    try {
-      const initialDep = Number(this.accountForm.initialDeposit || 0);
-      const initialVal =
-        this.accountForm.initialCurrentValue !== null &&
-        this.accountForm.initialCurrentValue !== undefined
-          ? Number(this.accountForm.initialCurrentValue)
-          : initialDep;
-
-      await this.store.createAccount({
-        name: this.accountForm.name,
-        initialDeposit: initialDep,
-        initialCurrentValue: initialVal,
-        colorHex: this.accountForm.colorHex,
-        iconName: this.accountForm.iconName,
-      });
-      toast.success('Conto creato con successo.');
-      this.closeModals();
-    } catch {
-      toast.error('Errore durante la creazione del conto.');
-    }
-  }
-
-  async saveOperation() {
-    const acc = this.selectedAccount();
-    if (!acc || this.operationForm.amount <= 0) {
-      toast.error('Inserisci un importo valido.');
-      return;
-    }
-    try {
-      await this.store.recordOperation({
-        accountId: acc.id,
-        operationType: Number(this.operationForm.operationType),
-        amount: Number(this.operationForm.amount),
-        logDate: this.operationForm.logDate,
-        note: this.operationForm.note,
-      });
-      toast.success('Operazione registrata e saldi ricalcolati!');
-      this.closeModals();
-    } catch {
-      toast.error("Errore durante il salvataggio dell'operazione.");
-    }
-  }
-
-  async saveValue() {
-    const acc = this.selectedAccount();
-    if (!acc || this.valueForm.currentValue < 0) {
-      toast.error('Inserisci un valore valido.');
-      return;
-    }
-    try {
-      await this.store.updateAccountValue(
-        acc.id,
-        Number(this.valueForm.currentValue),
-        this.valueForm.logDate,
-        this.valueForm.note,
-      );
-      toast.success('Valore attuale aggiornato!');
-      this.closeModals();
-    } catch {
-      toast.error("Errore durante l'aggiornamento del valore.");
-    }
-  }
-
-  async saveEditedLog() {
-    const log = this.editingLog();
-    if (!log || this.editLogForm.amount < 0) {
-      toast.error('Inserisci un importo valido.');
-      return;
-    }
-    try {
-      await this.store.updateLog(log.id, log.accountId, {
-        actionType: Number(this.editLogForm.actionType),
-        amount: Number(this.editLogForm.amount),
-        logDate: this.editLogForm.logDate,
-        note: this.editLogForm.note,
-      });
-      toast.success('Operazione modificata e saldi ricalcolati!');
-      this.closeModals();
-    } catch {
-      toast.error('Errore durante la modifica del movimento.');
-    }
+    this.dialog.open<InvestmentLogEditDialog, InvestmentLogEditDialogData, boolean>(
+      InvestmentLogEditDialog,
+      {
+        data: { account: acc, log },
+        width: '500px',
+        maxWidth: '95vw',
+      },
+    );
   }
 
   async deleteLog(log: InvestmentLog) {
