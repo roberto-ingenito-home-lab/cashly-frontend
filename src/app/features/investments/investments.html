@@ -1,0 +1,441 @@
+<header>
+  <div class="title">
+    <h1>Investimenti</h1>
+    <p>Monitora i tuoi conti d'investimento, versamenti, valore attuale e interessi</p>
+  </div>
+
+  <div class="actions">
+    <app-button variant="primary" icon="add" (clicked)="openAccountModal()">
+      Nuovo conto
+    </app-button>
+  </div>
+</header>
+
+<div class="statistic-cards">
+  <div class="transferred-card">
+    <div class="card-details">
+      <span class="stat-label">Totale Soldi Trasferiti</span>
+      <span class="stat-value">{{ formatCurrency(totalTransferred()) }}</span>
+      <span class="stat-sub">Capitale netto uscito dal tuo conto corrente (Versati - Prelevati)</span>
+    </div>
+    <div class="statistic-icon statistic-icon--transferred">
+      <app-icon [weight]="600">savings</app-icon>
+    </div>
+  </div>
+
+  <div class="market-card">
+    <div class="card-details">
+      <span class="stat-label">Valore Attuale Complessivo</span>
+      <span class="stat-value">{{ formatCurrency(totalCurrentValue()) }}</span>
+      <span class="stat-sub">Somma dei valori attuali di tutti i tuoi conti</span>
+    </div>
+    <div class="statistic-icon statistic-icon--market">
+      <app-icon [weight]="600">account_balance_wallet</app-icon>
+    </div>
+  </div>
+
+  <div
+    class="pnl-card"
+    [class.pnl-card--positive]="totalProfitLoss() >= 0"
+    [class.pnl-card--negative]="totalProfitLoss() < 0"
+  >
+    <div class="card-details">
+      <span class="stat-label">Profitto / Perdita + Interessi</span>
+      <span class="stat-value">
+        {{ (totalProfitLoss() >= 0 ? '+' : '') + formatCurrency(totalProfitLoss()) }}
+        ({{ (totalReturnPct() >= 0 ? '+' : '') + (totalReturnPct() | number:'1.2-2') }}%)
+      </span>
+      <span class="stat-sub">
+        Interessi accreditati: +{{ formatCurrency(totalInterestCredited()) }} · Mercato (non real.): {{ (totalUnrealizedMarket() >= 0 ? '+' : '') + formatCurrency(totalUnrealizedMarket()) }}
+      </span>
+    </div>
+    <div
+      class="statistic-icon"
+      [class.statistic-icon--positive]="totalProfitLoss() >= 0"
+      [class.statistic-icon--negative]="totalProfitLoss() < 0"
+    >
+      <app-icon [weight]="600">{{ totalProfitLoss() >= 0 ? 'trending_up' : 'trending_down' }}</app-icon>
+    </div>
+  </div>
+</div>
+
+<main>
+  <p>{{ store.accounts().length }} conti registrati</p>
+
+  @if (store.accounts().length === 0) {
+    <div class="empty-state">
+      <app-icon [size]="48">account_balance</app-icon>
+      <p>Nessun conto d'investimento registrato.</p>
+      <p>Crea i tuoi conti (es. Directa, Scalable Capital) per tracciare versamenti, valore attuale e interessi.</p>
+    </div>
+  } @else {
+    <div class="inv-list">
+      @for (acc of store.accounts(); track acc.id) {
+        <div class="inv-card">
+          <div class="card-top">
+            <div class="identity-group">
+              <div class="icon-badge" [style.backgroundColor]="acc.colorHex + '22'" [style.color]="acc.colorHex">
+                <app-icon [weight]="600">{{ acc.iconName || 'account_balance' }}</app-icon>
+              </div>
+              <div class="title-col">
+                <div class="item-name">
+                  <span>{{ acc.name }}</span>
+                  <span
+                    class="tag"
+                    [class.tag--positive]="acc.profitLoss >= 0"
+                    [class.tag--negative]="acc.profitLoss < 0"
+                  >
+                    {{ (acc.profitLoss >= 0 ? '+' : '') + formatCurrency(acc.profitLoss) }}
+                    ({{ (acc.returnPercentage >= 0 ? '+' : '') + (acc.returnPercentage | number:'1.2-2') }}%)
+                  </span>
+                </div>
+                <div class="tags-row">
+                  <span class="tag">Soldi trasferiti: {{ formatCurrency(acc.totalTransferred) }}</span>
+                  @if (acc.totalInterestCredited > 0) {
+                    <span class="tag tag--positive">Interessi accreditati: +{{ formatCurrency(acc.totalInterestCredited) }}</span>
+                  }
+                  <span class="tag">
+                    Profitto/Perdita non real.: {{ (acc.unrealizedMarketProfitLoss >= 0 ? '+' : '') + formatCurrency(acc.unrealizedMarketProfitLoss) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <app-button variant="primary" icon="swap_horiz" (clicked)="openOperationModal(acc, 0)">
+                Versa / Preleva
+              </app-button>
+              <app-button variant="secondary" icon="add_card" (clicked)="openOperationModal(acc, 2)">
+                + Interesse
+              </app-button>
+              <app-button variant="outlined" icon="sync" (clicked)="openValueModal(acc)">
+                Segna Valore Attuale
+              </app-button>
+              <app-button variant="danger" icon="delete" [iconOnly]="true" (clicked)="onDeleteAccount(acc)" />
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <span class="metric-label">Soldi Trasferiti (Netti)</span>
+              <span class="metric-val">{{ formatCurrency(acc.totalTransferred) }}</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Valore Attuale Conto</span>
+              <span class="metric-val">{{ formatCurrency(acc.totalCurrentValue) }}</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Interessi Accreditati</span>
+              <span class="metric-val" [class.metric-val--positive]="acc.totalInterestCredited > 0">
+                +{{ formatCurrency(acc.totalInterestCredited) }}
+              </span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Profitto / Perdita Totale</span>
+              <span
+                class="metric-val"
+                [class.metric-val--positive]="acc.profitLoss >= 0"
+                [class.metric-val--negative]="acc.profitLoss < 0"
+              >
+                {{ (acc.profitLoss >= 0 ? '+' : '') + formatCurrency(acc.profitLoss) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-bottom">
+            <span class="meta-note">
+              Ultimo aggiornamento: <strong>{{ formatDate(acc.updatedAt) }}</strong>
+            </span>
+
+            <app-button variant="outlined" icon="history" (clicked)="toggleLogs(acc)">
+              {{ isExpanded(acc.id) ? 'Nascondi movimenti' : 'Storico movimenti (' + acc.totalLogsCount + ')' }}
+            </app-button>
+          </div>
+
+          @if (isExpanded(acc.id)) {
+            @if (getAccountPagedState(acc.id); as paged) {
+              <div class="history-panel">
+                <div class="history-header-row">
+                  <span class="history-title">Storico Operazioni su {{ acc.name }} ({{ paged.totalCount }} totali)</span>
+                  <span class="history-page-info">
+                    Pagina {{ paged.page }} di {{ paged.totalPages }}
+                  </span>
+                </div>
+
+                @if (paged.items.length === 0) {
+                  <p class="meta-note">Nessuna operazione registrata per questo conto.</p>
+                } @else {
+                  <div class="history-list">
+                    @for (log of paged.items; track log.id) {
+                      <div class="history-row">
+                        <div class="history-left">
+                          <strong>{{ formatDate(log.logDate) }}</strong>
+                          <span
+                            class="tag"
+                            [class.tag--ticker]="log.actionType === 0"
+                            [class.tag--positive]="log.actionType === 2"
+                          >
+                            {{ getLogLabel(log.actionType) }}
+                          </span>
+                          @if (log.note) {
+                            <span>{{ log.note }}</span>
+                          }
+                        </div>
+                        <div class="history-right">
+                          <span>
+                            {{ log.actionType === 3 ? 'Valore: ' : (log.actionType === 1 ? '-' : '+') }}{{ formatCurrency(log.amount) }}
+                          </span>
+                          <app-button
+                            variant="secondary"
+                            icon="edit"
+                            [iconOnly]="true"
+                            (clicked)="openEditLogModal(acc, log)"
+                          />
+                          <app-button
+                            variant="danger"
+                            icon="delete"
+                            [iconOnly]="true"
+                            (clicked)="deleteLog(log)"
+                          />
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                  @if (paged.totalPages > 1) {
+                    <div class="pagination-bar">
+                      <app-button
+                        variant="outlined"
+                        icon="chevron_left"
+                        [disabled]="paged.page <= 1"
+                        (clicked)="setPage(acc, paged.page - 1)"
+                      >
+                        Precedente
+                      </app-button>
+                      <span class="pagination-status">
+                        Pagina <strong>{{ paged.page }}</strong> / <strong>{{ paged.totalPages }}</strong> ({{ paged.totalCount }} movimenti)
+                      </span>
+                      <app-button
+                        variant="outlined"
+                        icon="chevron_right"
+                        [disabled]="paged.page >= paged.totalPages"
+                        (clicked)="setPage(acc, paged.page + 1)"
+                      >
+                        Successiva
+                      </app-button>
+                    </div>
+                  }
+                }
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</main>
+
+<!-- MODAL 1: NUOVO CONTO -->
+@if (accountModalOpen()) {
+  <div class="modal-backdrop" (click)="closeModals()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>Nuovo Conto d'Investimento</h3>
+      <p class="modal-subtitle">Crea un conto (es. Directa, Scalable Capital) per tracciare soldi trasferiti, valore attuale e interessi.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Nome Conto / Broker *</label>
+          <input [(ngModel)]="accountForm.name" placeholder="es. Scalable Capital / Directa SIM" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Soldi Trasferiti Iniziali (€)</label>
+            <input type="number" step="0.01" [(ngModel)]="accountForm.initialDeposit" placeholder="es. 1000" />
+          </div>
+          <div class="field">
+            <label>Valore Attuale sul Conto (€)</label>
+            <input type="number" step="0.01" [(ngModel)]="accountForm.initialCurrentValue" placeholder="es. 1000" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="secondary" (clicked)="closeModals()">Annulla</app-button>
+        <app-button variant="primary" (clicked)="saveAccount()">Crea Conto</app-button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL 2: VERSA / PRELEVA / ACCREDITA INTERESSE -->
+@if (operationModalOpen()) {
+  <div class="modal-backdrop" (click)="closeModals()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>Registra Movimento su {{ selectedAccount()?.name }}</h3>
+      <p class="modal-subtitle">Segna un versamento (es. bonifico / PAC), un prelievo o l'interesse accreditato nel mese.</p>
+
+      <div class="form-grid">
+        <div class="mode-switch">
+          <button
+            type="button"
+            [class.active--buy]="operationForm.operationType === 0"
+            (click)="operationForm.operationType = 0"
+          >
+            → Versamento
+          </button>
+          <button
+            type="button"
+            [class.active--sell]="operationForm.operationType === 1"
+            (click)="operationForm.operationType = 1"
+          >
+            ← Prelievo
+          </button>
+          <button
+            type="button"
+            [class.active--dividend]="operationForm.operationType === 2"
+            (click)="operationForm.operationType = 2"
+          >
+            + Interesse Accreditato
+          </button>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>
+              @if (operationForm.operationType === 0) {
+                Importo Versato (€) *
+              } @else if (operationForm.operationType === 1) {
+                Importo Prelevato (€) *
+              } @else {
+                Interesse Accreditato (€) *
+              }
+            </label>
+            <input type="number" step="0.01" [(ngModel)]="operationForm.amount" placeholder="es. 1000" />
+          </div>
+          <div class="field">
+            <label>Data</label>
+            <input type="date" [(ngModel)]="operationForm.logDate" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nota (Opzionale)</label>
+          <input
+            [(ngModel)]="operationForm.note"
+            [placeholder]="operationForm.operationType === 2 ? 'es. Interessi mensili accreditati' : 'es. Bonifico 1.000€ / Rata PAC / Acquisto azioni'"
+          />
+        </div>
+
+        @if (operationForm.operationType === 0) {
+          <div class="helper-box">
+            Aumenta sia i <strong>Soldi Trasferiti</strong> sia il <strong>Valore Attuale</strong> di {{ formatCurrency(operationForm.amount || 0) }} (nessun profitto fittizio).
+          </div>
+        } @else if (operationForm.operationType === 1) {
+          <div class="helper-box">
+            Riduce sia i <strong>Soldi Trasferiti</strong> sia il <strong>Valore Attuale</strong> di {{ formatCurrency(operationForm.amount || 0) }}.
+          </div>
+        } @else {
+          <div class="helper-box">
+            Aumenta il <strong>Valore Attuale</strong> e gli <strong>Interessi Accreditati</strong> di +{{ formatCurrency(operationForm.amount || 0) }} senza toccare i Soldi Trasferiti!
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="secondary" (clicked)="closeModals()">Annulla</app-button>
+        <app-button variant="primary" (clicked)="saveOperation()">Registra</app-button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL 3: SEGNA VALORE ATTUALE (PROFITTO / PERDITA NON REALIZZATA) -->
+@if (valueModalOpen()) {
+  <div class="modal-backdrop" (click)="closeModals()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>Segna Valore Attuale: {{ selectedAccount()?.name }}</h3>
+      <p class="modal-subtitle">
+        Inserisci quanto vale oggi in totale il conto su {{ selectedAccount()?.name }} per calcolare il profitto o la perdita non realizzata.
+      </p>
+
+      <div class="form-grid">
+        <div class="field-row">
+          <div class="field">
+            <label>Valore Attuale Complessivo sul Conto (€) *</label>
+            <input type="number" step="0.01" [(ngModel)]="valueForm.currentValue" />
+          </div>
+          <div class="field">
+            <label>Data Rilevazione</label>
+            <input type="date" [(ngModel)]="valueForm.logDate" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nota (Opzionale)</label>
+          <input [(ngModel)]="valueForm.note" placeholder="es. Aggiornamento periodico saldo conto" />
+        </div>
+
+        @if (selectedAccount(); as acc) {
+          <div class="helper-box">
+            Soldi trasferiti finora: <strong>{{ formatCurrency(acc.totalTransferred) }}</strong> ·
+            Con questo valore il tuo profitto/perdita totale su {{ acc.name }} sarà:
+            <strong>
+              {{ ((valueForm.currentValue - acc.totalTransferred) >= 0 ? '+' : '') + formatCurrency(valueForm.currentValue - acc.totalTransferred) }}
+            </strong>
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="secondary" (clicked)="closeModals()">Annulla</app-button>
+        <app-button variant="primary" (clicked)="saveValue()">Salva Valore Attuale</app-button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL 4: MODIFICA OPERAZIONE DELLO STORICO -->
+@if (editLogModalOpen()) {
+  <div class="modal-backdrop" (click)="closeModals()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>Modifica Operazione Storico ({{ selectedAccount()?.name }})</h3>
+      <p class="modal-subtitle">
+        Modifica tipo, importo, data o nota: tutti i saldi del conto verranno ricalcolati in automatico.
+      </p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo di Operazione *</label>
+          <select [(ngModel)]="editLogForm.actionType">
+            <option [ngValue]="0">→ Versamento (Soldi trasferiti nel conto)</option>
+            <option [ngValue]="1">← Prelievo (Soldi riportati su C/C)</option>
+            <option [ngValue]="2">+ Interesse Accreditato</option>
+            <option [ngValue]="3">Valore Attuale Segnato (Snapshot saldo)</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>{{ editLogForm.actionType === 3 ? 'Valore Attuale (€) *' : 'Importo (€) *' }}</label>
+            <input type="number" step="0.01" [(ngModel)]="editLogForm.amount" />
+          </div>
+          <div class="field">
+            <label>Data Operazione *</label>
+            <input type="date" [(ngModel)]="editLogForm.logDate" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nota</label>
+          <input [(ngModel)]="editLogForm.note" placeholder="Causale o nota del movimento" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="secondary" (clicked)="closeModals()">Annulla</app-button>
+        <app-button variant="primary" (clicked)="saveEditedLog()">Salva Modifiche</app-button>
+      </div>
+    </div>
+  </div>
+}

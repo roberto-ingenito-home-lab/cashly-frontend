@@ -134,6 +134,11 @@ export class ApiClient {
     return res.data;
   }
 
+  async patch<T>(url: string, data?: unknown) {
+    const res = await this.client.patch<T>(url, data);
+    return res.data;
+  }
+
   async delete<T>(url: string) {
     const res = await this.client.delete<T>(url);
     return res.data;

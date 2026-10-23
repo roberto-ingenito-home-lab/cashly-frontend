@@ -1,9 +1,13 @@
 <div class="layout-container">
   <nav>
     <div class="nav-inner">
-      <p class="cashly-label">Cashly</p>
-
-      <span class="page-title">Cashly</span>
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="cashly-label"
+      >
+        Cashly
+      </a>
 
       <div class="links">
         @for (item of navItems; track item.route) {
@@ -26,15 +30,43 @@
         <button
           mat-icon-button
           type="button"
-          [matTooltip]="isDark() ? 'Tema chiaro' : 'Tema scuro'"
-          (click)="toggleTheme()"
+          matTooltip="Profilo"
+          aria-label="Profilo"
+          [matMenuTriggerFor]="profileMenu"
         >
-          <app-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</app-icon>
+          <app-icon>person</app-icon>
         </button>
 
-        <button mat-icon-button type="button" matTooltip="Logout" (click)="logout()">
-          <app-icon>move_item</app-icon>
-        </button>
+        <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu">
+          <div class="profile-menu-email" (click)="$event.stopPropagation()">
+            <span class="profile-menu-email-label">Account</span>
+            <span class="profile-menu-email-value">{{ userEmail() }}</span>
+          </div>
+
+          <mat-divider />
+
+          <a mat-menu-item routerLink="/categories">
+            <app-icon>category</app-icon>
+            <span>Categorie</span>
+          </a>
+
+          <button mat-menu-item type="button" (click)="toggleTheme()">
+            <app-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</app-icon>
+            <span>{{ isDark() ? 'Tema chiaro' : 'Tema scuro' }}</span>
+          </button>
+
+          <button mat-menu-item type="button" (click)="openChangePasswordDialog()">
+            <app-icon>lock_reset</app-icon>
+            <span>Cambia password</span>
+          </button>
+
+          <mat-divider />
+
+          <button mat-menu-item type="button" class="logout-item" (click)="logout()">
+            <app-icon>logout</app-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </nav>

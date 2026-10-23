@@ -15,15 +15,19 @@ import {
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
 import { ThemeService } from '../../core/services/theme.service';
 import { AuthStore } from '../../core/services/auth.store';
 import { CategoriesStore } from '../../core/services/categories.store';
 import { TransactionsStore } from '../../core/services/transactions.store';
 import { SubscriptionsStore } from '../../core/services/subscriptions.store';
+import { InvestmentsStore } from '../../core/services/investments.store';
 import { Icon } from '../../shared/components/icon/icon';
+import { ChangePasswordDialog } from './components/change-password-dialog/change-password-dialog';
 import { SwUpdate } from '@angular/service-worker';
 import { toast } from 'ngx-sonner';
-
 
 @Component({
   selector: 'app-layout',
@@ -34,6 +38,8 @@ import { toast } from 'ngx-sonner';
     MatIconButton,
     MatTooltipModule,
     MatProgressSpinner,
+    MatMenuModule,
+    MatDividerModule,
     Icon,
   ],
   templateUrl: './layout.html',
@@ -46,17 +52,19 @@ export class Layout implements OnInit {
   private categoriesStore = inject(CategoriesStore);
   private transactionsStore = inject(TransactionsStore);
   private subscriptionsStore = inject(SubscriptionsStore);
+  private investmentsStore = inject(InvestmentsStore);
+  private dialog = inject(MatDialog);
   protected themeService = inject(ThemeService);
   private updates = inject(SwUpdate);
 
   protected readonly navItems = [
-    { route: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { route: 'categories', label: 'Categorie', icon: 'category' },
     { route: 'transactions', label: 'Transazioni', icon: 'receipt_long' },
     { route: 'subscriptions', label: 'Abbonamenti', icon: 'credit_card' },
+    { route: 'investments', label: 'Investimenti', icon: 'trending_up' },
   ];
 
   isDark = computed(() => this.themeService.theme() === 'dark');
+  userEmail = computed(() => this.auth.state()?.user.email ?? '');
 
   isLoading = signal(true);
 
@@ -65,14 +73,21 @@ export class Layout implements OnInit {
       this.categoriesStore.init(),
       this.transactionsStore.init(),
       this.subscriptionsStore.init(),
+      this.investmentsStore.init(),
     ]);
 
     this.isLoading.set(false);
   }
 
-
   toggleTheme() {
     this.themeService.toggle();
+  }
+
+  openChangePasswordDialog() {
+    this.dialog.open(ChangePasswordDialog, {
+      width: '420px',
+      maxWidth: '95vw',
+    });
   }
 
   async refreshPage() {

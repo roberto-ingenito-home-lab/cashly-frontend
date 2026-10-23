@@ -56,19 +56,23 @@ nav {
   }
 
   .cashly-label {
-    display: none;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    color: $foreground;
+    transition:
+      color $transition,
+      transform $transition;
+
     @include breakpoint('sm') {
-      display: block;
+      font-size: $font-size-base;
       justify-self: start;
     }
-  }
 
-  .page-title {
-    font-size: $font-size-lg;
-    flex: 1;
-
-    @include breakpoint('sm') {
-      display: none;
+    &:hover,
+    &.active {
+      color: $primary;
     }
   }
 
@@ -137,6 +141,59 @@ nav {
   .links a:hover::after,
   .links a.active::after {
     transform: translateX(-50%) scaleX(1);
+  }
+}
+
+::ng-deep .profile-menu.mat-mdc-menu-panel {
+  min-width: 240px;
+  max-width: 300px;
+  border-radius: $radius-md;
+  border: 1px solid $default-200;
+  background-color: $content1;
+
+  .profile-menu-email {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: $space-3 $space-4;
+    cursor: default;
+
+    .profile-menu-email-label {
+      font-size: $font-size-xs;
+      color: $default-500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .profile-menu-email-value {
+      font-size: $font-size-sm;
+      font-weight: 600;
+      color: $foreground;
+      word-break: break-all;
+    }
+  }
+
+  .mat-mdc-menu-item {
+    min-height: 2.75rem;
+    color: $foreground;
+
+    .mat-mdc-menu-item-text {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+      font-family: $font-display;
+      font-size: $font-size-sm;
+      font-weight: 500;
+    }
+
+    &.logout-item {
+      color: $danger-600;
+
+      app-icon {
+        color: $danger-600;
+      }
+    }
   }
 }
 
