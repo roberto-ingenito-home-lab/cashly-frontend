@@ -53,13 +53,13 @@ export class InvestmentOperationDialog {
   protected amountLabel = computed(() => {
     switch (this.selectedType()) {
       case InvestmentLogType.DEPOSIT:
-        return 'Importo Versato (€) *';
+        return 'Importo Versato';
       case InvestmentLogType.WITHDRAWAL:
-        return 'Importo Prelevato (€) *';
+        return 'Importo Prelevato';
       case InvestmentLogType.INTEREST:
-        return 'Interesse Accreditato (€) *';
+        return 'Interesse Accreditato';
       default:
-        return 'Importo (€) *';
+        return 'Importo';
     }
   });
 

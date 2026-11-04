@@ -1,18 +1,18 @@
-<h2 mat-dialog-title>Modifica Movimento ({{ data.account.name }})</h2>
+<h2 mat-dialog-title>Modifica Movimento</h2>
 
 <mat-dialog-content>
   <p class="dialog-subtitle">
-    Modifica tipo, importo, data o nota: tutti i saldi del conto verranno ricalcolati in automatico.
+    Tutti i saldi del conto verranno ricalcolati in automatico.
   </p>
 
   <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
     <div class="field">
       <label for="log-action-type">Tipo di Operazione</label>
       <select id="log-action-type" formControlName="actionType">
-        <option [ngValue]="0">Versamento (Soldi trasferiti nel conto)</option>
-        <option [ngValue]="1">Prelievo (Soldi riportati su C/C)</option>
+        <option [ngValue]="0">Versamento</option>
+        <option [ngValue]="1">Prelievo</option>
         <option [ngValue]="2">Interesse Accreditato</option>
-        <option [ngValue]="3">Valore Attuale Segnato (Snapshot saldo)</option>
+        <option [ngValue]="3">Valore Attuale</option>
       </select>
     </div>
 

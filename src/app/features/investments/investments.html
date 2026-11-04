@@ -46,7 +46,7 @@
         ({{ (totalReturnPct() >= 0 ? '+' : '') + (totalReturnPct() | number:'1.2-2') }}%)
       </span>
       <span class="stat-sub">
-        Interessi accreditati: +{{ formatCurrency(totalInterestCredited()) }} · Mercato (non real.): {{ (totalUnrealizedMarket() >= 0 ? '+' : '') + formatCurrency(totalUnrealizedMarket()) }}
+        Interessi accreditati: +{{ formatCurrency(totalInterestCredited()) }}<br>Non realizzato: {{ (totalUnrealizedMarket() >= 0 ? '+' : '') + formatCurrency(totalUnrealizedMarket()) }}
       </span>
     </div>
     <div
@@ -66,7 +66,7 @@
     <div class="empty-state">
       <app-icon [size]="48">account_balance</app-icon>
       <p>Nessun conto d'investimento registrato.</p>
-      <p>Crea i tuoi conti (es. Directa, Scalable Capital) per tracciare versamenti, valore attuale e interessi.</p>
+      <p>Crea i tuoi conti per tracciare versamenti, valore attuale e interessi.</p>
     </div>
   } @else {
     <div class="inv-list">

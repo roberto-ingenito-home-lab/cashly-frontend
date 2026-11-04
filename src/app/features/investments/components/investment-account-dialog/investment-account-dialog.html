@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>Nuovo Conto d'Investimento</h2>
 
 <mat-dialog-content>
-  <p class="dialog-subtitle">Crea un conto (es. Directa, Scalable Capital) per tracciare soldi trasferiti, valore attuale e interessi.</p>
+  <p class="dialog-subtitle">Crea un conto per tracciare soldi trasferiti, valore attuale e interessi.</p>
 
   <form [formGroup]="form" class="dialog-form" (ngSubmit)="submit()">
     <app-input
       label="Nome Conto / Broker"
-      placeholder="es. Scalable Capital / Directa SIM"
+      placeholder="es. Directa"
       formControlName="name"
       [hasError]="form.controls.name.touched && form.controls.name.invalid"
     >
