@@ -35,6 +35,13 @@ export class Transactions {
   page = signal(0);
   pageSize = signal(20);
 
+  /** Stato di espansione della card bilancio/trasferimenti (mostra entrate e uscite) */
+  statsExpanded = signal(false);
+
+  toggleStats() {
+    this.statsExpanded.update((v) => !v);
+  }
+
   constructor() {
     effect(() => {
       const f = this.filters();

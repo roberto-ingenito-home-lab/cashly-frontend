@@ -19,42 +19,38 @@
   </div>
 </header>
 
-<div class="statistic-cards">
-  <div class="income-card">
+<div
+  class="summary-card"
+  [class.summary-card--expanded]="statsExpanded()"
+  role="button"
+  tabindex="0"
+  [attr.aria-expanded]="statsExpanded()"
+  aria-controls="summary-details"
+  (click)="toggleStats()"
+  (keydown.enter)="toggleStats()"
+  (keydown.space)="$event.preventDefault(); toggleStats()"
+>
+  <!-- Bilancio -->
+  <div class="summary-row summary-row--balance">
     <div class="card-details">
-      <p>Entrate</p>
+      <p>Bilancio</p>
       <p>
         {{
-          statistics().income.toLocaleString('it-IT', {
-            style: 'currency',
-            currency: userCurrency(),
-          })
+          (statistics().balance > 0 ? '+' : '') +
+            statistics().balance.toLocaleString('it-IT', {
+              style: 'currency',
+              currency: userCurrency(),
+            })
         }}
       </p>
     </div>
-    <div class="statistic-icon statistic-icon--income">
-      <app-icon [weight]="600">north_east</app-icon>
+    <div class="statistic-icon statistic-icon--balance">
+      <app-icon [weight]="600">leaderboard</app-icon>
     </div>
   </div>
 
-  <div class="expense-card">
-    <div class="card-details">
-      <p>Uscite</p>
-      <p>
-        {{
-          statistics().expense.toLocaleString('it-IT', {
-            style: 'currency',
-            currency: userCurrency(),
-          })
-        }}
-      </p>
-    </div>
-    <div class="statistic-icon statistic-icon--expense">
-      <app-icon [weight]="600">south_east</app-icon>
-    </div>
-  </div>
-
-  <div class="transfer-card">
+  <!-- Trasferimenti (estensione della card bilancio) -->
+  <div class="summary-row summary-row--transfer">
     <div class="card-details">
       <p>Trasferimenti</p>
       <p>
@@ -72,22 +68,48 @@
     </div>
   </div>
 
-  <div class="balance-card">
-    <div class="card-details">
-      <p>Bilancio</p>
-      <p>
-        {{
-          (statistics().balance > 0 ? '+' : '') +
-            statistics().balance.toLocaleString('it-IT', {
-              style: 'currency',
-              currency: userCurrency(),
-            })
-        }}
-      </p>
+  <!-- Entrate / Uscite (visibili solo quando espansa) -->
+  <div id="summary-details" class="summary-details" [attr.aria-hidden]="!statsExpanded()">
+    <div class="summary-details-inner">
+      <div class="summary-row summary-row--income">
+        <div class="card-details">
+          <p>Entrate</p>
+          <p>
+            {{
+              statistics().income.toLocaleString('it-IT', {
+                style: 'currency',
+                currency: userCurrency(),
+              })
+            }}
+          </p>
+        </div>
+        <div class="statistic-icon statistic-icon--income">
+          <app-icon [weight]="600">north_east</app-icon>
+        </div>
+      </div>
+
+      <div class="summary-row summary-row--expense">
+        <div class="card-details">
+          <p>Uscite</p>
+          <p>
+            {{
+              statistics().expense.toLocaleString('it-IT', {
+                style: 'currency',
+                currency: userCurrency(),
+              })
+            }}
+          </p>
+        </div>
+        <div class="statistic-icon statistic-icon--expense">
+          <app-icon [weight]="600">south_east</app-icon>
+        </div>
+      </div>
     </div>
-    <div class="statistic-icon statistic-icon--balance">
-      <app-icon [weight]="600">leaderboard</app-icon>
-    </div>
+  </div>
+
+  <div class="summary-toggle">
+    <span>{{ statsExpanded() ? 'Nascondi dettagli' : 'Mostra entrate e uscite' }}</span>
+    <app-icon class="summary-toggle-icon">expand_more</app-icon>
   </div>
 </div>
 

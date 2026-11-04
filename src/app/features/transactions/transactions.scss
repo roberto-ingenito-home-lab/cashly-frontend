@@ -1,22 +1,12 @@
 @use 'variables' as *;
 @use 'breakpoints' as *;
 
-@mixin statistic-card {
-  display: flex;
-  align-items: center;
-
-  gap: $space-2;
-
-  width: 100%;
-  min-width: 0;
-
+@mixin summary-row-padding {
   padding: $space-2 $space-3;
 
   @include breakpoint('md') {
     padding: $space-3 $space-4;
   }
-
-  border-radius: $radius-md;
 }
 
 :host {
@@ -81,19 +71,40 @@ header {
   }
 }
 
-.statistic-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-2;
+// ===================================
+// Card riepilogo: Bilancio + Trasferimenti (+ Entrate/Uscite espandibili)
+// ===================================
+.summary-card {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  min-width: 0;
 
-  @include breakpoint('sm') {
-    grid-template-columns: repeat(2, 1fr);
-    gap: $space-3;
+  border: 2px solid $primary-400;
+  border-radius: $radius-md;
+  overflow: hidden;
+
+  background-color: $primary-100;
+  color: $primary-700;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    box-shadow 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 4px 16px color-mix(in srgb, $primary-400, transparent 70%);
   }
 
-  @include breakpoint('lg') {
-    grid-template-columns: repeat(4, 1fr);
+  &:active {
+    transform: scale(0.995);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-500;
+    outline-offset: 3px;
   }
 
   .card-details {
@@ -131,37 +142,121 @@ header {
       }
     }
   }
+}
 
-  .income-card {
-    @include statistic-card;
+.summary-row {
+  @include summary-row-padding;
 
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  min-width: 0;
+
+  // Il bilancio è il dato principale: valore più grande
+  &--balance {
+    .card-details p:nth-of-type(2) {
+      font-size: $font-size-xl;
+
+      @include breakpoint('md') {
+        font-size: $font-size-2xl;
+      }
+
+      @include breakpoint('xl') {
+        font-size: $font-size-3xl;
+      }
+    }
+  }
+
+  // Estensione della card bilancio: stesso blocco, tono leggermente diverso
+  &--transfer {
+    background-color: color-mix(in srgb, $primary-100, $content1 40%);
+    border-top: 1px dashed color-mix(in srgb, $primary-400, transparent 40%);
+
+    .card-details p:nth-of-type(2) {
+      font-size: $font-size-base;
+
+      @include breakpoint('md') {
+        font-size: $font-size-lg;
+      }
+
+      @include breakpoint('xl') {
+        font-size: $font-size-xl;
+      }
+    }
+
+    .statistic-icon {
+      width: 2.5rem;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      min-height: 2.5rem;
+    }
+  }
+
+  &--income {
     background-color: $success-100;
-    border: 2px solid $success-400;
     color: $success-600;
   }
 
-  .expense-card {
-    @include statistic-card;
-
+  &--expense {
     background-color: $danger-100;
-    border: 2px solid $danger-400;
     color: $danger-700;
   }
+}
 
-  .transfer-card {
-    @include statistic-card;
+// Sezione espandibile (animazione altezza tramite grid 0fr -> 1fr)
+.summary-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows $transition;
 
-    background-color: color-mix(in srgb, $primary-100, $content1 40%);
-    border: 2px solid color-mix(in srgb, $primary-400, transparent 20%);
-    color: $primary-700;
+  .summary-details-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 0;
+    overflow: hidden;
+
+    @include breakpoint('sm') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-row {
+      border-top: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
+    }
+
+    @include breakpoint('sm') {
+      .summary-row--expense {
+        border-left: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
+      }
+    }
+  }
+}
+
+.summary-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $space-1;
+
+  padding: $space-1 $space-3;
+  border-top: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
+  background-color: color-mix(in srgb, $primary-100, $content1 60%);
+
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: $primary-700;
+
+  .summary-toggle-icon {
+    transition: transform $transition;
+  }
+}
+
+.summary-card--expanded {
+  .summary-details {
+    grid-template-rows: 1fr;
   }
 
-  .balance-card {
-    @include statistic-card;
-
-    background-color: $primary-100;
-    border: 2px solid $primary-400;
-    color: $primary-700;
+  .summary-toggle-icon {
+    transform: rotate(180deg);
   }
 }
 
