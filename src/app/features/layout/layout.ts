@@ -58,6 +58,7 @@ export class Layout implements OnInit {
   private updates = inject(SwUpdate);
 
   protected readonly navItems = [
+    { route: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
     { route: 'transactions', label: 'Transazioni', icon: 'receipt_long' },
     { route: 'subscriptions', label: 'Abbonamenti', icon: 'credit_card' },
     { route: 'investments', label: 'Investimenti', icon: 'trending_up' },
