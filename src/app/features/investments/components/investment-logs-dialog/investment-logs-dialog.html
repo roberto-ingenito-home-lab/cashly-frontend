@@ -1,0 +1,123 @@
+<h2 mat-dialog-title class="dialog-header">
+  <div
+    class="header-badge"
+    [style.backgroundColor]="(account().colorHex || '#6366f1') + '22'"
+    [style.color]="account().colorHex || null"
+  >
+    <app-icon [weight]="600">history</app-icon>
+  </div>
+  <div class="header-titles">
+    <span class="account-name">{{ account().name }}</span>
+    <span class="sub-label">
+      Storico movimenti
+      @if (pagedState(); as paged) {
+        · {{ paged.totalCount }} {{ paged.totalCount === 1 ? 'movimento' : 'movimenti' }}
+      }
+    </span>
+  </div>
+  <button type="button" class="close-btn" aria-label="Chiudi" (click)="close()">
+    <app-icon>close</app-icon>
+  </button>
+</h2>
+
+<mat-dialog-content>
+  <!-- Area scrollabile per la lista dei movimenti -->
+  <div class="logs-scroll-area">
+    @if (pagedState(); as paged) {
+      @if (paged.items.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <app-icon [size]="32">receipt_long</app-icon>
+          </div>
+          <p class="empty-title">Nessun movimento</p>
+          <p class="empty-text">Non ci sono ancora operazioni registrate per questo conto.</p>
+        </div>
+      } @else {
+        <ul class="log-list" [class.log-list--loading]="loading()">
+          @for (log of paged.items; track log.id) {
+            @let meta = getLogMeta(log.actionType);
+            <li class="log-item">
+              <div [class]="'log-icon log-icon--' + meta.variant">
+                <app-icon [weight]="600" [size]="20">{{ meta.icon }}</app-icon>
+              </div>
+
+              <div class="log-details">
+                <span class="log-label">{{ meta.label }}</span>
+                <span class="log-date">
+                  <app-icon [size]="14">calendar_today</app-icon>
+                  {{ formatDate(log.logDate) }}
+                </span>
+                @if (log.note) {
+                  <span class="log-note" [title]="log.note">{{ log.note }}</span>
+                }
+              </div>
+
+              <div class="log-side">
+                <span [class]="'log-amount log-amount--' + meta.variant">
+                  {{ meta.sign }}{{ formatCurrency(log.amount) }}
+                </span>
+                <div class="log-actions">
+                  <button
+                    type="button"
+                    class="icon-action"
+                    aria-label="Modifica movimento"
+                    title="Modifica"
+                    (click)="openEditLogModal(log)"
+                  >
+                    <app-icon [size]="18">edit</app-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Elimina movimento"
+                    title="Elimina"
+                    (click)="deleteLog(log)"
+                  >
+                    <app-icon [size]="18">delete</app-icon>
+                  </button>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    } @else {
+      <div class="loading-state">
+        <mat-spinner diameter="36" />
+        <span>Caricamento movimenti...</span>
+      </div>
+    }
+  </div>
+
+  @if (pagedState(); as paged) {
+    @if (paged.totalPages > 1) {
+      <div class="pagination">
+        <button
+          type="button"
+          class="page-btn"
+          aria-label="Pagina precedente"
+          [disabled]="paged.page <= 1 || loading()"
+          (click)="setPage(paged.page - 1)"
+        >
+          <app-icon>chevron_left</app-icon>
+        </button>
+        <span class="page-status">
+          Pagina <strong>{{ paged.page }}</strong> di <strong>{{ paged.totalPages }}</strong>
+        </span>
+        <button
+          type="button"
+          class="page-btn"
+          aria-label="Pagina successiva"
+          [disabled]="paged.page >= paged.totalPages || loading()"
+          (click)="setPage(paged.page + 1)"
+        >
+          <app-icon>chevron_right</app-icon>
+        </button>
+      </div>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <app-button variant="secondary" (clicked)="close()">Chiudi</app-button>
+</mat-dialog-actions>

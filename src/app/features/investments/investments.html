@@ -80,9 +80,10 @@
                     <span>{{ acc.name }}</span>
                   </div>
                   <div class="card-crud-actions">
-                    <app-button variant="secondary" icon="trending_up" [iconOnly]="true" (clicked)="openPerformanceModal(acc)" />
-                    <app-button variant="primary" icon="edit" [iconOnly]="true" (clicked)="openEditAccountModal(acc)" />
-                    <app-button variant="danger" icon="delete" [iconOnly]="true" (clicked)="onDeleteAccount(acc)" />
+                    <app-button variant="outlined" icon="history" [iconOnly]="true" title="Storico movimenti" (clicked)="openLogsModal(acc)" />
+                    <app-button variant="secondary" icon="trending_up" [iconOnly]="true" title="Andamento e rendimento" (clicked)="openPerformanceModal(acc)" />
+                    <app-button variant="primary" icon="edit" [iconOnly]="true" title="Modifica conto" (clicked)="openEditAccountModal(acc)" />
+                    <app-button variant="danger" icon="delete" [iconOnly]="true" title="Elimina conto" (clicked)="onDeleteAccount(acc)" />
                   </div>
                 </div>
               </div>
@@ -100,18 +101,8 @@
 
           <div class="metrics-grid">
             <div class="metric-box">
-              <span class="metric-label">Soldi Trasferiti (Netti)</span>
-              <span class="metric-val">{{ formatCurrency(acc.totalTransferred) }}</span>
-            </div>
-            <div class="metric-box">
               <span class="metric-label">Valore Attuale Conto</span>
               <span class="metric-val">{{ formatCurrency(acc.totalCurrentValue) }}</span>
-            </div>
-            <div class="metric-box">
-              <span class="metric-label">Interessi Accreditati</span>
-              <span class="metric-val" [class.metric-val--positive]="acc.totalInterestCredited > 0">
-                +{{ formatCurrency(acc.totalInterestCredited) }}
-              </span>
             </div>
             <div class="metric-box">
               <span class="metric-label">Profitto / Perdita Totale</span>
@@ -129,89 +120,7 @@
             <span class="meta-note">
               Ultimo aggiornamento: <strong>{{ formatDate(acc.updatedAt) }}</strong>
             </span>
-
-            <app-button variant="outlined" icon="history" (clicked)="toggleLogs(acc)">
-              {{ isExpanded(acc.id) ? 'Nascondi movimenti' : 'Storico movimenti (' + acc.totalLogsCount + ')' }}
-            </app-button>
           </div>
-
-          @if (isExpanded(acc.id)) {
-            @if (getAccountPagedState(acc.id); as paged) {
-              <div class="history-panel">
-                <div class="history-header-row">
-                  <span class="history-title">Storico Operazioni su {{ acc.name }} ({{ paged.totalCount }} totali)</span>
-                  <span class="history-page-info">
-                    Pagina {{ paged.page }} di {{ paged.totalPages }}
-                  </span>
-                </div>
-
-                @if (paged.items.length === 0) {
-                  <p class="meta-note">Nessuna operazione registrata per questo conto.</p>
-                } @else {
-                  <div class="history-list">
-                    @for (log of paged.items; track log.id) {
-                      <div class="history-row">
-                        <div class="history-left">
-                          <strong>{{ formatDate(log.logDate) }}</strong>
-                          <span
-                            class="tag"
-                            [class.tag--ticker]="log.actionType === 0"
-                            [class.tag--positive]="log.actionType === 2"
-                          >
-                            {{ getLogLabel(log.actionType) }}
-                          </span>
-                          @if (log.note) {
-                            <span>{{ log.note }}</span>
-                          }
-                        </div>
-                        <div class="history-right">
-                          <span>
-                            {{ log.actionType === 3 ? 'Valore: ' : (log.actionType === 1 ? '-' : '+') }}{{ formatCurrency(log.amount) }}
-                          </span>
-                          <app-button
-                            variant="secondary"
-                            icon="edit"
-                            [iconOnly]="true"
-                            (clicked)="openEditLogModal(acc, log)"
-                          />
-                          <app-button
-                            variant="danger"
-                            icon="delete"
-                            [iconOnly]="true"
-                            (clicked)="deleteLog(log)"
-                          />
-                        </div>
-                      </div>
-                    }
-                  </div>
-
-                  @if (paged.totalPages > 1) {
-                    <div class="pagination-bar">
-                      <app-button
-                        variant="outlined"
-                        icon="chevron_left"
-                        [disabled]="paged.page <= 1"
-                        (clicked)="setPage(acc, paged.page - 1)"
-                      >
-                        Precedente
-                      </app-button>
-                      <span class="pagination-status">
-                        Pagina <strong>{{ paged.page }}</strong> / <strong>{{ paged.totalPages }}</strong> ({{ paged.totalCount }} movimenti)
-                      </span>
-                      <app-button
-                        variant="outlined"
-                        icon="chevron_right"
-                        [disabled]="paged.page >= paged.totalPages"
-                        (clicked)="setPage(acc, paged.page + 1)"
-                      >
-                        Successiva
-                      </app-button>
-                    </div>
-                  }
-                }
-              </div>
-            }
-          }
         </div>
       }
     </div>

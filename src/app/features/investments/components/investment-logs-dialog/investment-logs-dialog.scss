@@ -1,0 +1,396 @@
+@use 'variables' as *;
+@use 'breakpoints' as *;
+
+// ===================================
+// Header
+// ===================================
+.dialog-header {
+  display: flex !important;
+  align-items: center;
+  gap: $space-3;
+  margin: 0;
+  padding: $space-4 $space-4 $space-3 $space-6;
+  line-height: 1.3rem;
+
+  // Material 3 aggiunge un ::before per la baseline che raddoppia l'altezza con contenuto flex
+  &::before {
+    display: none !important;
+  }
+
+  .header-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    border-radius: $radius-md;
+    background-color: $primary-100;
+    color: $primary-700;
+  }
+
+  .header-titles {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 0.15rem;
+
+    .account-name {
+      font-size: $font-size-lg;
+      font-weight: 700;
+      color: $foreground;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sub-label {
+      font-size: $font-size-xs;
+      font-weight: 500;
+      color: $default-500;
+    }
+  }
+
+  .close-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: $default-500;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      background-color: $default-100;
+      color: $foreground;
+    }
+  }
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+mat-dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  gap: $space-3;
+  padding: $space-2 $space-6 $space-2 !important;
+  overflow: hidden !important; // Delega lo scrolling a .logs-scroll-area
+}
+
+.logs-scroll-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: $space-1 0;
+
+  // Nasconde la barra di scorrimento su tutti i browser
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE/Edge legacy
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Edge moderno
+    width: 0;
+    height: 0;
+  }
+}
+
+// ===================================
+// Lista movimenti
+// ===================================
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: opacity 0.2s ease;
+
+  &--loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3;
+  background-color: $content1;
+  border: 1px solid $default-200;
+  border-radius: $radius-md;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    background-color: color-mix(in srgb, $content2, transparent 20%);
+    border-color: $default-300;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+    .log-actions {
+      opacity: 1;
+    }
+  }
+
+  @include breakpoint('sm') {
+    padding: $space-3 $space-4;
+  }
+}
+
+.log-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+
+  &--deposit {
+    background-color: $primary-100;
+    color: $primary-600;
+  }
+
+  &--withdrawal {
+    background-color: $danger-100;
+    color: $danger-600;
+  }
+
+  &--interest {
+    background-color: $success-100;
+    color: $success-600;
+  }
+
+  &--snapshot {
+    background-color: $default-100;
+    color: $default-600;
+  }
+}
+
+.log-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 0.15rem;
+
+  .log-label {
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: $foreground;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .log-date {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+    font-size: $font-size-xs;
+    color: $default-500;
+  }
+
+  .log-note {
+    font-size: $font-size-xs;
+    font-style: italic;
+    color: $default-500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.log-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: $space-1;
+}
+
+.log-amount {
+  font-size: $font-size-base;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &--deposit {
+    color: $primary-600;
+  }
+
+  &--withdrawal {
+    color: $danger-600;
+  }
+
+  &--interest {
+    color: $success-600;
+  }
+
+  &--snapshot {
+    color: $foreground;
+  }
+}
+
+.log-actions {
+  display: flex;
+  gap: $space-1;
+
+  // Su desktop le azioni compaiono all'hover; su touch restano sempre visibili
+  @media (hover: hover) {
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+  }
+}
+
+.icon-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: none;
+  border-radius: $radius-sm;
+  background-color: transparent;
+  color: $default-500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: $primary-100;
+    color: $primary-700;
+  }
+
+  &--danger:hover {
+    background-color: $danger-100;
+    color: $danger-700;
+  }
+}
+
+// ===================================
+// Paginazione
+// ===================================
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+  padding: $space-2 0;
+
+  .page-status {
+    min-width: 7rem;
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $default-600;
+
+    strong {
+      color: $foreground;
+    }
+  }
+
+  .page-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid $default-200;
+    border-radius: 50%;
+    background-color: transparent;
+    color: $foreground;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      background-color: $default-100;
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ===================================
+// Stati vuoto / caricamento
+// ===================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-8 $space-4;
+  text-align: center;
+  border: 1px dashed $default-300;
+  border-radius: $radius-md;
+
+  .empty-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: $space-2;
+    border-radius: 50%;
+    background-color: $default-100;
+    color: $default-500;
+  }
+
+  .empty-title {
+    font-weight: 700;
+    color: $foreground;
+  }
+
+  .empty-text {
+    font-size: $font-size-sm;
+    color: $default-500;
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-8;
+  font-size: $font-size-sm;
+  color: $default-500;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: $space-3 $space-6 $space-4 !important;
+  flex-shrink: 0;
+  border-top: 1px solid $default-200;
+}
