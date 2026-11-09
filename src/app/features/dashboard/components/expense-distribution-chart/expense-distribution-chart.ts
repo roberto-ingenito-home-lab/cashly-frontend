@@ -20,6 +20,7 @@ import {
 } from 'ng-apexcharts';
 import { TransactionType } from '../../../../../lib/types/transaction';
 import { CategoriesStore } from '../../../../core/services/categories.store';
+import { ChartCard } from '../chart-card/chart-card';
 
 interface Slice {
   key: string;
@@ -49,12 +50,16 @@ const OTHER_COLOR = { bg: '#a8a29e', fg: '#000000' };
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.data-selected-rel]': 'selectedRel()',
+    '[class.is-fullscreen]': 'isFullscreen()',
     '(document:click)': 'handleDocumentClick($event)',
   },
 })
 export class ExpenseDistributionChart {
   private categoriesStore = inject(CategoriesStore);
   private hostRef: ElementRef<HTMLElement> = inject(ElementRef);
+  private chartCard = inject(ChartCard, { optional: true });
+
+  protected isFullscreen = computed(() => this.chartCard?.isFullscreen() ?? false);
 
   expenses = input<{ categoryId: number | null; amount: number }[] | undefined>();
   currency = input.required<string>();
@@ -153,7 +158,8 @@ export class ExpenseDistributionChart {
 
   chart = computed<ApexChart>(() => ({
     type: 'donut',
-    height: 260,
+    height: '100%',
+    width: '100%',
     fontFamily: 'inherit',
     background: 'transparent',
     animations: { enabled: true, speed: 400 },

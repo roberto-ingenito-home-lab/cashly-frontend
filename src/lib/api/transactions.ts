@@ -11,7 +11,15 @@ export class TransactionsApi {
     if (params) {
       for (const [key, value] of Object.entries(params)) {
         if (value !== null && value !== undefined) {
-          queryParams.append(key, String(value));
+          if (Array.isArray(value)) {
+            for (const item of value) {
+              if (item !== null && item !== undefined) {
+                queryParams.append(key, String(item));
+              }
+            }
+          } else {
+            queryParams.append(key, String(value));
+          }
         }
       }
     }

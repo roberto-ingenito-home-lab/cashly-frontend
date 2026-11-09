@@ -4,8 +4,10 @@
 :host {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: $space-4;
   min-width: 0;
+  min-height: 0;
 }
 
 .chart-toolbar {
@@ -73,6 +75,25 @@
 
 .chart-wrapper {
   width: 100%;
+  height: 300px;
+  min-width: 0;
+  min-height: 0;
+
+  apx-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  ::ng-deep apx-chart > div {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+:host(.is-fullscreen) .chart-wrapper {
+  flex: 1;
+  height: 100%;
 }
 
 .pagination {
@@ -125,6 +146,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
 
   min-height: 12rem;
   color: $default-500;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import {
   ApexAnnotations,
   ApexAxisChartSeries,
@@ -14,6 +14,7 @@ import {
   ChartComponent,
 } from 'ng-apexcharts';
 import { TransactionType } from '../../../../../lib/types/transaction';
+import { ChartCard } from '../chart-card/chart-card';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 interface DailyPoint {
@@ -27,10 +28,16 @@ interface DailyPoint {
   templateUrl: './cumulative-balance-chart.html',
   styleUrl: './cumulative-balance-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.is-fullscreen]': 'isFullscreen()',
+  },
 })
 export class CumulativeBalanceChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
+  private chartCard = inject(ChartCard, { optional: true });
+
+  protected isFullscreen = computed(() => this.chartCard?.isFullscreen() ?? false);
 
   points = input<{ x: number; y: number }[] | undefined>();
   currency = input.required<string>();
@@ -64,7 +71,8 @@ export class CumulativeBalanceChart {
 
   chart = computed<ApexChart>(() => ({
     type: 'area',
-    height: 280,
+    height: '100%',
+    width: '100%',
     fontFamily: 'inherit',
     background: 'transparent',
     toolbar: { show: false },

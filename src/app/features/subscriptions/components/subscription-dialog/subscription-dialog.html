@@ -68,15 +68,7 @@
       <p class="error-text" role="alert">La data di inizio non può essere successiva alla data di fine.</p>
     }
 
-    <div class="field">
-      <label for="sub-category">Categoria</label>
-      <select id="sub-category" formControlName="categoryId">
-        <option [ngValue]="null">Nessuna</option>
-        @for (cat of availableCategories(); track cat.categoryId) {
-          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}{{ cat.isHidden ? ' (nascosta)' : '' }}</option>
-        }
-      </select>
-    </div>
+    <app-category-select formControlName="categoryId" />
 
     @if (error(); as err) {
       <p class="error-text" role="alert">{{ err }}</p>

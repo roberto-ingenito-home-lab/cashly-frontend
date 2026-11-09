@@ -8,9 +8,9 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
-import { CategoriesStore } from '../../../../core/services/categories.store';
 import { TransactionsStore } from '../../../../core/services/transactions.store';
 import { Button } from '../../../../shared/components/button/button';
+import { CategorySelect } from '../../../../shared/components/category-select/category-select';
 import { Input } from '../../../../shared/components/input/input';
 import { Textarea } from '../../../../shared/components/textarea/textarea';
 
@@ -26,6 +26,7 @@ export interface TransactionDialogData {
     MatDialogContent,
     MatDialogActions,
     Button,
+    CategorySelect,
     Input,
     Textarea,
   ],
@@ -39,22 +40,10 @@ export class TransactionDialog {
   private transactionsStore = inject(TransactionsStore);
 
   protected readonly TransactionType = TransactionType;
-  protected categoriesStore = inject(CategoriesStore);
 
   protected isEdit = computed(() => !!this.data.transaction);
   protected submitting = signal(false);
   protected error = signal<string | null>(null);
-
-  protected availableCategories = computed(() => {
-    const all = this.categoriesStore.state() ?? [];
-    const currentCategoryId = this.data.transaction?.categoryId;
-
-    if (!this.isEdit()) {
-      return all.filter((c) => !c.isHidden);
-    }
-
-    return all.filter((c) => !c.isHidden || c.categoryId === currentCategoryId);
-  });
 
   parseDateTime = (isoString: string) => {
     const date = new Date(isoString);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -14,6 +14,7 @@ import {
   ChartComponent,
 } from 'ng-apexcharts';
 import { TransactionType } from '../../../../../lib/types/transaction';
+import { ChartCard } from '../chart-card/chart-card';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 @Component({
@@ -22,10 +23,16 @@ import { useChartColors, useChartThemeMode } from '../chart-theme';
   templateUrl: './daily-trend-chart.html',
   styleUrl: './daily-trend-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.is-fullscreen]': 'isFullscreen()',
+  },
 })
 export class DailyTrendChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
+  private chartCard = inject(ChartCard, { optional: true });
+
+  protected isFullscreen = computed(() => this.chartCard?.isFullscreen() ?? false);
 
   dailyData = input<{ timestamp: number; incomes: number; expenses: number }[] | undefined>();
   year = input.required<number>();
@@ -105,7 +112,8 @@ export class DailyTrendChart {
 
   chart = computed<ApexChart>(() => ({
     type: 'line',
-    height: 280,
+    height: '100%',
+    width: '100%',
     fontFamily: 'inherit',
     background: 'transparent',
     toolbar: { show: false },

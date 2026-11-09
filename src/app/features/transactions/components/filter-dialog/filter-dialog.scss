@@ -17,38 +17,23 @@
   flex-direction: column;
   gap: $space-1;
 
+  .field-label,
   label {
     font-size: $font-size-sm;
     font-weight: 500;
     color: $default-600;
   }
 
-  select {
-    padding: $space-2 $space-3;
-    border: 1px solid $default-200;
-    border-radius: $radius-sm;
-    background-color: $content1;
-    color: $foreground;
-    font-family: inherit;
-    font-size: $font-size-base;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-400;
-    }
-
-    optgroup {
-      font-weight: 600;
-      color: $default-500;
-      background-color: $content1;
-    }
-
-    option {
-      font-weight: 400;
-      color: $foreground;
-      background-color: $content1;
-    }
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-1 $space-2;
+    padding-top: $space-1;
   }
+}
+
+.date-range-field {
+  width: 100%;
 }
 
 .dialog-actions {

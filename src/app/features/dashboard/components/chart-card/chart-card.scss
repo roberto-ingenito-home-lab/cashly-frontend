@@ -85,14 +85,17 @@ header {
 .chart-body {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: $space-3;
   min-width: 0;
   min-height: 0;
 }
 
-:host(.is-fullscreen) {
+:host(.is-fullscreen),
+:host(:fullscreen) {
   width: 100vw;
   height: 100vh;
+  box-sizing: border-box;
   border: none;
   border-radius: 0;
   padding: $space-6;

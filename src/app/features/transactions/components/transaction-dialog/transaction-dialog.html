@@ -42,15 +42,7 @@
       <app-input label="Ora" type="time" formControlName="transactionTime" />
     </div>
 
-    <div class="field">
-      <label for="tx-category">Categoria</label>
-      <select id="tx-category" formControlName="categoryId">
-        <option [ngValue]="null">Nessuna</option>
-        @for (cat of availableCategories(); track cat.categoryId) {
-          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}{{ cat.isHidden ? ' (nascosta)' : '' }}</option>
-        }
-      </select>
-    </div>
+    <app-category-select formControlName="categoryId" />
 
     <app-textarea label="Descrizione" placeholder="Opzionale" formControlName="description" />
 

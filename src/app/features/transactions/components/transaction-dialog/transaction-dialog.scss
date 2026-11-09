@@ -67,33 +67,6 @@
   }
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: $space-1;
-
-  label {
-    font-size: $font-size-sm;
-    font-weight: 500;
-    color: $default-600;
-  }
-
-  select {
-    padding: $space-2 $space-3;
-    border: 1px solid $default-200;
-    border-radius: $radius-sm;
-    background-color: $content1;
-    color: $foreground;
-    font-family: inherit;
-    font-size: $font-size-base;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-400;
-    }
-  }
-}
-
 .error-text {
   font-size: $font-size-sm;
   color: $danger-600;

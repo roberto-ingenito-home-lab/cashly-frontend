@@ -14,6 +14,7 @@ import {
 } from 'ng-apexcharts';
 import { Transaction, TransactionType } from '../../../../../lib/types/transaction';
 import { CategoriesStore } from '../../../../core/services/categories.store';
+import { ChartCard } from '../chart-card/chart-card';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 import { Icon } from '../../../../shared/components/icon/icon';
 import { DashboardStore } from '../../../../core/services/dashboard.store';
@@ -27,12 +28,18 @@ type TimeRange = 'all' | 'current_year' | 'current_month' | 'last_3_months' | 'l
   templateUrl: './category-breakdown-chart.html',
   styleUrl: './category-breakdown-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.is-fullscreen]': 'isFullscreen()',
+  },
 })
 export class CategoryBreakdownChart {
   private categoriesStore = inject(CategoriesStore);
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
   private dashboardStore = inject(DashboardStore);
+  private chartCard = inject(ChartCard, { optional: true });
+
+  protected isFullscreen = computed(() => this.chartCard?.isFullscreen() ?? false);
 
   currency = input.required<string>();
 
@@ -104,7 +111,8 @@ export class CategoryBreakdownChart {
 
   chart = computed<ApexChart>(() => ({
     type: 'bar',
-    height: 300,
+    height: '100%',
+    width: '100%',
     fontFamily: 'inherit',
     background: 'transparent',
     toolbar: { show: false },

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -13,6 +13,7 @@ import {
   ChartComponent,
 } from 'ng-apexcharts';
 import { TransactionType } from '../../../../../lib/types/transaction';
+import { ChartCard } from '../chart-card/chart-card';
 import { useChartColors, useChartThemeMode } from '../chart-theme';
 
 const MONTH_LABELS = [
@@ -36,10 +37,16 @@ const MONTH_LABELS = [
   templateUrl: './yearly-overview-chart.html',
   styleUrl: './yearly-overview-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.is-fullscreen]': 'isFullscreen()',
+  },
 })
 export class YearlyOverviewChart {
   private colors = useChartColors();
   private themeMode = useChartThemeMode();
+  private chartCard = inject(ChartCard, { optional: true });
+
+  protected isFullscreen = computed(() => this.chartCard?.isFullscreen() ?? false);
 
   monthlyData = input<{ month: number; incomes: number; expenses: number }[] | undefined>();
   year = input.required<number>();
@@ -75,7 +82,8 @@ export class YearlyOverviewChart {
 
   chart = computed<ApexChart>(() => ({
     type: 'bar',
-    height: 300,
+    height: '100%',
+    width: '100%',
     fontFamily: 'inherit',
     background: 'transparent',
     toolbar: { show: false },

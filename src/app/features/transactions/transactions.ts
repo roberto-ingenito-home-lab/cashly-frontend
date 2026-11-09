@@ -27,6 +27,7 @@ export class Transactions {
 
   filters = signal<TransactionFilters>({
     type: null,
+    types: null,
     categoryId: null,
     dateFrom: null,
     dateTo: null,
@@ -53,7 +54,12 @@ export class Transactions {
         pageSize: ps,
       };
 
-      if (f.type !== null) params['type'] = f.type;
+      if (f.types && f.types.length > 0) {
+        params['types'] = f.types;
+      } else if (f.type !== null && f.type !== undefined) {
+        params['type'] = f.type;
+      }
+
       if (f.categoryId !== null) params['categoryId'] = f.categoryId;
       if (f.dateFrom) params['dateFrom'] = f.dateFrom;
       if (f.dateTo) params['dateTo'] = f.dateTo;
@@ -64,13 +70,15 @@ export class Transactions {
 
   hasActiveFilters = computed(() => {
     const f = this.filters();
-    return f.type !== null || f.categoryId !== null || f.dateFrom !== null || f.dateTo !== null;
+    const hasType = (f.types && f.types.length > 0) || (f.type !== null && f.type !== undefined);
+    return hasType || f.categoryId !== null || f.dateFrom !== null || f.dateTo !== null;
   });
 
   resetFilters() {
     this.page.set(0);
     this.filters.set({
       type: null,
+      types: null,
       categoryId: null,
       dateFrom: null,
       dateTo: null,

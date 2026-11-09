@@ -1,0 +1,28 @@
+<div class="field">
+  @if (label()) {
+    <label [for]="selectId">{{ label() }}</label>
+  }
+  <select
+    [id]="selectId"
+    [ngModel]="value()"
+    (ngModelChange)="handleChange($event)"
+    (blur)="handleBlur()"
+    [disabled]="isDisabled()"
+  >
+    <option [ngValue]="null">{{ emptyLabel() }}</option>
+    @if (visibleCategories().length > 0) {
+      <optgroup label="Categorie attive">
+        @for (cat of visibleCategories(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        }
+      </optgroup>
+    }
+    @if (hiddenCategories().length > 0) {
+      <optgroup label="Categorie nascoste">
+        @for (cat of hiddenCategories(); track cat.categoryId) {
+          <option [ngValue]="cat.categoryId">{{ cat.categoryName }}</option>
+        }
+      </optgroup>
+    }
+  </select>
+</div>

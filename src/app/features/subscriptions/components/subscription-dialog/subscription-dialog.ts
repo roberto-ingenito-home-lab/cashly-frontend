@@ -9,9 +9,9 @@ import {
 } from '@angular/material/dialog';
 import { Subscription, SubscriptionFrequency } from '../../../../../lib/types/subscription';
 import { TransactionType } from '../../../../../lib/types/transaction';
-import { CategoriesStore } from '../../../../core/services/categories.store';
 import { SubscriptionsStore } from '../../../../core/services/subscriptions.store';
 import { Button } from '../../../../shared/components/button/button';
+import { CategorySelect } from '../../../../shared/components/category-select/category-select';
 import { Input } from '../../../../shared/components/input/input';
 
 export interface SubscriptionDialogData {
@@ -49,6 +49,7 @@ function formatLocalDate(isoString: string | null | undefined): string {
     MatDialogContent,
     MatDialogActions,
     Button,
+    CategorySelect,
     Input,
   ],
   templateUrl: './subscription-dialog.html',
@@ -62,22 +63,10 @@ export class SubscriptionDialog {
 
   protected readonly TransactionType = TransactionType;
   protected readonly SubscriptionFrequency = SubscriptionFrequency;
-  protected categoriesStore = inject(CategoriesStore);
 
   protected isEdit = computed(() => !!this.data.subscription);
   protected submitting = signal(false);
   protected error = signal<string | null>(null);
-
-  protected availableCategories = computed(() => {
-    const all = this.categoriesStore.state() ?? [];
-    const currentCategoryId = this.data.subscription?.categoryId;
-
-    if (!this.isEdit()) {
-      return all.filter((c) => !c.isHidden);
-    }
-
-    return all.filter((c) => !c.isHidden || c.categoryId === currentCategoryId);
-  });
 
   protected frequencies = [
     { value: SubscriptionFrequency.Weekly, label: 'Settimanale' },

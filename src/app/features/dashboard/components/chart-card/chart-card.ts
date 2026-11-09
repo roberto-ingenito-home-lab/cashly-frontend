@@ -36,22 +36,46 @@ export class ChartCard {
   back = output<void>();
   forward = output<void>();
 
-  protected isFullscreen = signal(false);
+  readonly isFullscreen = signal(false);
 
   constructor() {
     fromEvent(document, 'fullscreenchange')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.isFullscreen.set(document.fullscreenElement === this.host.nativeElement);
+        const isFs = document.fullscreenElement === this.host.nativeElement;
+        this.isFullscreen.set(isFs);
+        if (!isFs) {
+          this.unlockOrientation();
+        }
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event('resize'));
+        });
       });
   }
 
-  protected toggleFullscreen(): void {
+  protected async toggleFullscreen(): Promise<void> {
     if (document.fullscreenElement === this.host.nativeElement) {
-      document.exitFullscreen();
+      this.unlockOrientation();
+      await document.exitFullscreen();
       return;
     }
 
-    this.host.nativeElement.requestFullscreen?.();
+    try {
+      await this.host.nativeElement.requestFullscreen?.();
+      const orientation = screen.orientation as ScreenOrientation & {
+        lock?: (orientation: string) => Promise<void>;
+      };
+      await orientation?.lock?.('landscape');
+    } catch {
+      // Ignorato se il browser o il dispositivo non supporta il blocco dell'orientamento
+    }
+  }
+
+  private unlockOrientation(): void {
+    try {
+      screen.orientation?.unlock?.();
+    } catch {
+      // Ignorato se non supportato
+    }
   }
 }
