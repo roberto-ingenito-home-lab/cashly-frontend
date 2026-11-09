@@ -144,6 +144,15 @@ header {
   }
 }
 
+.summary-top {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @include breakpoint('sm') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .summary-row {
   @include summary-row-padding;
 
@@ -152,8 +161,8 @@ header {
   gap: $space-2;
   min-width: 0;
 
-  // Il bilancio è il dato principale: valore più grande
-  &--balance {
+  // Saldo Liquido e Patrimonio Netto
+  &--liquid {
     .card-details p:nth-of-type(2) {
       font-size: $font-size-xl;
 
@@ -167,10 +176,32 @@ header {
     }
   }
 
-  // Estensione della card bilancio: stesso blocco, tono leggermente diverso
+  &--networth {
+    background-color: color-mix(in srgb, $primary-100, $content1 35%);
+    border-top: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
+
+    @include breakpoint('sm') {
+      border-top: none;
+      border-left: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
+    }
+
+    .card-details p:nth-of-type(2) {
+      font-size: $font-size-xl;
+
+      @include breakpoint('md') {
+        font-size: $font-size-2xl;
+      }
+
+      @include breakpoint('xl') {
+        font-size: $font-size-3xl;
+      }
+    }
+  }
+
+  // Flussi del periodo espandibili
   &--transfer {
     background-color: color-mix(in srgb, $primary-100, $content1 40%);
-    border-top: 1px dashed color-mix(in srgb, $primary-400, transparent 40%);
+    color: $primary-700;
 
     .card-details p:nth-of-type(2) {
       font-size: $font-size-base;
@@ -216,7 +247,7 @@ header {
     overflow: hidden;
 
     @include breakpoint('sm') {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
 
     .summary-row {
@@ -224,7 +255,8 @@ header {
     }
 
     @include breakpoint('sm') {
-      .summary-row--expense {
+      .summary-row--expense,
+      .summary-row--transfer {
         border-left: 1px solid color-mix(in srgb, $primary-400, transparent 40%);
       }
     }
@@ -307,7 +339,9 @@ main {
     color: $primary-700;
   }
 
-  &--balance {
+  &--balance,
+  &--liquid,
+  &--networth {
     background-color: color-mix(in srgb, $primary-300, transparent 50%);
     color: $primary-700;
   }

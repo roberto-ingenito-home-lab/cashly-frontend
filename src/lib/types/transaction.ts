@@ -21,6 +21,9 @@ export interface PaginatedTransactions {
   totalExpense: number;
   totalTransfers: number;
   balance: number;
+  liquidBalance?: number;
+  investmentBalance?: number;
+  netWorth?: number;
 }
 
 export type TransactionCreateDto = Omit<Transaction, "transactionId">;

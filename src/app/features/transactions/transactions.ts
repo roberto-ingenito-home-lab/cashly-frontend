@@ -87,6 +87,9 @@ export class Transactions {
       expense: s?.totalExpense ?? 0,
       transfers: s?.totalTransfers ?? 0,
       balance: s?.balance ?? 0,
+      liquidBalance: s?.liquidBalance ?? 0,
+      investmentBalance: s?.investmentBalance ?? 0,
+      netWorth: s?.netWorth ?? 0,
     };
   });
 
