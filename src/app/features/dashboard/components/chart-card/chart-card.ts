@@ -44,9 +44,6 @@ export class ChartCard {
       .subscribe(() => {
         const isFs = document.fullscreenElement === this.host.nativeElement;
         this.isFullscreen.set(isFs);
-        if (!isFs) {
-          this.unlockOrientation();
-        }
         requestAnimationFrame(() => {
           window.dispatchEvent(new Event('resize'));
         });
@@ -55,27 +52,14 @@ export class ChartCard {
 
   protected async toggleFullscreen(): Promise<void> {
     if (document.fullscreenElement === this.host.nativeElement) {
-      this.unlockOrientation();
       await document.exitFullscreen();
       return;
     }
 
     try {
       await this.host.nativeElement.requestFullscreen?.();
-      const orientation = screen.orientation as ScreenOrientation & {
-        lock?: (orientation: string) => Promise<void>;
-      };
-      await orientation?.lock?.('landscape');
     } catch {
-      // Ignorato se il browser o il dispositivo non supporta il blocco dell'orientamento
-    }
-  }
-
-  private unlockOrientation(): void {
-    try {
-      screen.orientation?.unlock?.();
-    } catch {
-      // Ignorato se non supportato
+      // Ignorato se il browser non supporta o blocca la richiesta di fullscreen
     }
   }
 }
